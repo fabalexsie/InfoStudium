@@ -1,0 +1,101 @@
+<resources>
+    <string name="app_name">Info Studies</string>
+    <string name="url_exmanag_login" translatable="false">https://lufgi2.informatik.rwth-aachen.de/%1$s/v2/login.xhtml</string>
+    <string name="url_exmanag_index_base" translatable="false">https://lufgi2.informatik.rwth-aachen.de</string>
+    <string name="url_exmanag_points" translatable="false">https://lufgi2.informatik.rwth-aachen.de/%1$s/v2/points.xhtml</string>
+
+    <string name="url_ds_1_results" translatable="false">https://www2.math.rwth-aachen.de/DS18/QueryResults</string>
+    <string name="url_la_1_results" translatable="false">https://www2.math.rwth-aachen.de/LAInf19/QueryResults</string>
+    <string name="url_okuson_results_1" translatable="false">https://www2.math.rwth-aachen.de/</string>
+    <string name="url_okuson_results_2" translatable="false">/QueryResults</string>
+    <string name="exmanag_kursname_progra" translatable="false">info18</string>
+    <string name="exmanag_kursname_fosap" translatable="false">fosap19</string>
+    <string name="exmanag_kursname_dsal" translatable="false">dsal19</string>
+    <string name="moodle_kursid_afi" translatable="false">148</string>
+    <string name="moodle_kursid_bus" translatable="false">732</string>
+    <string name="moodle_kursid_stocha" translatable="false">693</string>
+
+
+    <string name="loading">Loading…</string>
+    <string name="logindata">Logindata</string>
+    <string name="benutzer">Username</string>
+    <string name="online">online (%1$d%%)</string>
+    <string name="schriftlich">written (%1$d%%)</string>
+    <string name="password">Password</string>
+    <string name="settings">Settings</string>
+    <string name="error">Error: wrong login, no internet connection, server design changed or internal error in procedure</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="show_points">Show points</string>
+    <string name="set_testname">text which is shown before the test number</string>
+    <string name="change_value">Change value</string>
+    <string name="set_NoResultText">Text for Tests with no result</string>
+    <string name="choose_browser">Choose a browser</string>
+    <string name="feedback">Give Feedback (Errors, Wishes, Alpha-Version)</string>
+    <string name="share_app">Share the app with other users</string>
+    <string name="choose_share_app">Share with</string>
+    <string name="share_app_text">Use this app to see your points of different modules: https://play.google.com/store/apps/details?id=de.siebes.fabian.infostudium</string>
+    <string name="disclaimer">Disclaimer and Privacy Policy</string>
+    <string name="disclaimer_text" translatable="false">INOFFIZIELLE VERSION es wird KEINE Garantie für die richtige Anzeige der Punkte übernommen. Es wird keine Gewähr mit Problemen in direktem sowie indirektem Bezug mit der App übernommen. Desweiteren wird keine Haftung für Schäden die in direktem oder indirektem Zusammenhang mit der App entstehen übernommen. Die Logindaten werden nur Lokal auf dem Gerät (in einer Datenbank) gespeichert, aber es kann keine Garantie übernommen werden, dass keine andere App darauf zugreift (insbesondere bei gerooteten Smartphones). Es besteht die Möglichkeit die Logindaten zu verschlüsseln. Es werden unverschlüsselte Anfragen an meinen Server für eine Statistik gesendet (keine Übertragung von Logindaten). \n Die App wird nur zur Verfügung gestellt und sollte bei Bedenken nicht genutzt werden.</string>
+    <string name="no_warranty">All statements without guarantee</string>
+    <string name="set_ShowNoResult">Should show unfinished Tests?</string>
+    <string name="error_no_username_pw">Please enter username and password.</string>
+    <string name="this_shouldnt_happen">Oops, this shouldn\'t happen</string>
+    <string name="send_logcat">Send logcat</string>
+    <string name="sending_logcat">Thank you for your support!</string>
+    <string name="close">Close</string>
+    <string name="logcat">Logcat</string>
+    <string name="news">News</string>
+    <string name="desc_problem">Please describe when your problem occurs</string>
+    <string name="set_active_modules">Choose modules to show</string>
+    <string name="masterpass_reject">Masterpassword rejected. Please restart the app.</string>
+    <string name="masterpass_wrong">Masterpassword is wrong</string>
+    <string name="masterpass">Masterpassword</string>
+    <string name="masterpass_dialog_desc">Please enter your masterpassword.</string>
+    <string name="no_masterpass_entered_info_title">No masterpassword</string>
+    <string name="no_masterpass_entered_info_desc">You haven\'t entered the masterpassword so the logindata cannot be encrypted. Please retry by pressing the bottom below and enter your masterpassword. If you forgot your password, you can also reset your passwords there.</string>
+    <string name="enter_masterpass">Enter masterpass</string>
+    <string name="set_change_masterpass">Set or change your masterpassword</string>
+    <string name="new_masterpass">New masterpassword</string>
+    <string name="changed_masterpass">Changed masterpass</string>
+    <string name="error_saving_masterpass">Error while saving the masterpassword</string>
+    <string name="error_saving_password">Error while saving the password</string>
+    <string name="delete_passwords">Delete passwords</string>
+    <string name="delete_passwords_title">Delete all passwords</string>
+    <string name="delete_passwords_desc">You can delete all saved passwords and reset the masterpassword. There isn\'t any possibility to regenerate a the masterpassword. So it will be reseted by deleting all passwords because the other passwords are encrypted with the masterpassword.</string>
+    <string name="delete">Delete</string>
+    <string name="more_information">More info</string>
+    <string name="masterpass_set">is set</string>
+    <string name="masterpass_not_set">is not set</string>
+    <string name="no_modul_selected_info_title">No modules selected</string>
+    <string name="no_module_selected_info_desc">You haven\'t selected any module. Please choose at least one modul so you can see your points here.</string>
+    <string name="select_modules">Select modules</string>
+    <string name="error_no_tests">No tests found. but maybe this is an internal error. Please check the original page.</string>
+    <string name="error_server_not_available">Server is not available. Please try later again.</string>
+    <string name="error_maintenance">The Server is in maintenance mode.</string>
+    <string name="error_showing_error_should_not_happen" translatable="false">This error should not happen, because the app doesn\'t knows which error occurred.</string>
+    <string name="log_activity">Send usage statistic\nClick here to see the results</string>
+    <string name="login_name">Name</string>
+    <string name="modules">Modules</string>
+    <string name="edit_modul">Edit module</string>
+    <string name="modul_name">Module</string>
+    <string name="desc">Description</string>
+    <string name="kursid">course id</string>
+    <string name="reload">Reload</string>
+    <string name="error_saving_module">Error saving the module. Maybe you have no logindata selected.</string>
+    <string name="add_login_first">Please add at first the login credentials.</string>
+    <string name="moodle" translatable="false">Moodle</string>
+    <string name="okuson" translatable="false">Okuson</string>
+    <string name="exercisems" translatable="false">Exercisemanagementsystem</string>
+    <string name="l2p" translatable="false">L2P (only TI)</string>
+    <string name="custom_module">Custom</string>
+    <string name="new_data">New Data</string>
+    <string name="points_diff_positive" translatable="false">+%1$s</string>
+    <string name="points_diff_negative" translatable="false">-%1$s</string>
+    <string name="all_semesters">All semester</string>
+    <string-array name="modul_types">
+        <item>@string/moodle</item><!-- IS_PUBLIC_VERSION -->
+        <item>@string/okuson</item>
+        <item>@string/exercisems</item>
+        <item>@string/l2p</item>
+    </string-array>
+</resources>
