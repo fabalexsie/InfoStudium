@@ -121,7 +121,8 @@ public class ModulView extends ConstraintLayout {
         if (!mBooShouldShowNoResult) {
             for (TestList testList : mModul.getTestLists()) {
                 int pos = 0;
-                while (testList.getTests().get(pos).getPoints() <= 0) {
+                while (testList.getTests().get(pos) != null
+                        && testList.getTests().get(pos).getPoints() <= 0) {
                     testList.getTests().remove(pos);
                 }
             }

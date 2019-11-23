@@ -148,7 +148,9 @@ public class Module {
 
     private TestList findListByName(String name) {
         for (TestList list : testLists) {
-            if (list != null && list.getListName().equals(name)) return list;
+            if (list != null && list.getListName().equals(name)) {
+                return list;
+            }
         }
         TestList testList = new TestList(name);
         testLists.add(testList);
