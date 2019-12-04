@@ -19,7 +19,7 @@ public class Const {
     static {
         DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance();
         symbols.setDecimalSeparator('.');
-        decimalFormat = new DecimalFormat("#.0#", symbols);
+        decimalFormat = new DecimalFormat("0.0#", symbols);
         decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
     }
 
