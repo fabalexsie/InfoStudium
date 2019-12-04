@@ -171,7 +171,7 @@ public class Moodle extends ModuleLoading {
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Bonus-Stufen", t);
                                 } else {
-                                    strName = strName.replace("Übungsblatt ", strPraefixName);
+                                    strName = strName.replace("Übungsblatt ", strPraefixName); // TODO Post-Processor erstellen und auslagern
                                     strName = strName.replace("Uebungsblatt ", strPraefixName);
                                     strName = strName.replace("Blatt", strPraefixName);
                                     Test t = new Test(strName, dPoints, dMaxPoints);
