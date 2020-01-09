@@ -125,9 +125,9 @@ public class Moodle extends ModuleLoading {
                     /*Elements elements = docErgebnisse.select("table th[id^=row_][class^=level3]," +
                             " table td[headers$=grade][class^=level3]," +
                             " table td[headers$=range][class^=level3]");*/
-                    Elements elements = docErgebnisse.select("table th[id^=row_]," +
-                            " table td[headers$=grade]," +
-                            " table td[headers$=range]");
+                    Elements elements = docErgebnisse.select("table th[id^=row_].level2," +
+                            " table td[headers$=grade].level2," +
+                            " table td[headers$=range].level2");
                     for (Element el : elements) {
                         switch (col) {
                             case 0:
