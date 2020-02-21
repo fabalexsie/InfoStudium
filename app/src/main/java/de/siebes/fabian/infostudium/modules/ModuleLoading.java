@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import de.siebes.fabian.infostudium.ErrorCode;
 import de.siebes.fabian.infostudium.Module;
+import de.siebes.fabian.infostudium.StorageHelper;
 import de.siebes.fabian.infostudium.WebsiteLoadingUtils;
 
 // Neue Module müssen diese Klasse erweitern und in einem Thread die Ergebnisse laden.
@@ -23,6 +24,15 @@ public abstract class ModuleLoading {
     }
 
     public abstract void loadResults();
+
+    boolean isActivated(Module mModul){
+        StorageHelper storageHelper = new StorageHelper(mActivity);
+        if(!storageHelper.isModuleActivated(mModul.getModulType())){
+            stopWithErrorCode(mModul, ErrorCode.NOT_ACTIVATED);
+            return false;
+        }
+        return true;
+    }
 
     void stopWithErrorCode(final Module modul, final ErrorCode errorCode) {
         mActivity.runOnUiThread(new Runnable() {

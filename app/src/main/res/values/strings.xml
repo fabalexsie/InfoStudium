@@ -92,8 +92,11 @@
     <string name="points_diff_positive" translatable="false">+%1$s</string>
     <string name="points_diff_negative" translatable="false">-%1$s</string>
     <string name="all_semesters">All semester</string>
+    <string name="error_module_not_activated">Error: Module not activated. Please contact the developer to solve the problem.</string>
+    <string name="activated">Activated</string>
+    <string name="deactivated">Deactivated</string>
     <string-array name="modul_types">
-        <item>@string/moodle</item><!-- IS_PUBLIC_VERSION -->
+        <item>@string/moodle</item>
         <item>@string/okuson</item>
         <item>@string/exercisems</item>
         <item>@string/l2p</item>

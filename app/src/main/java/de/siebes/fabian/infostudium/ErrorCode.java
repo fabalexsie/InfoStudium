@@ -6,5 +6,6 @@ public enum ErrorCode {
     SERVER_NOT_AVAILABLE,
     MAINTENANCE,
     NO_TESTS_FOUND,
-    OTHER_PROBLEMS;
+    OTHER_PROBLEMS,
+    NOT_ACTIVATED
 }

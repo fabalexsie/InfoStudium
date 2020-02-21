@@ -33,6 +33,10 @@ public class ExercisemanagementsystemI2 extends ModuleLoading {
 
     @Override
     public void loadResults() {
+        if (!isActivated(mModul)) {
+            return;
+        }
+        // else
         new Thread(new Runnable() {
             @Override
             public void run() {

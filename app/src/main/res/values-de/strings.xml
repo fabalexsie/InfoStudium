@@ -69,4 +69,7 @@
     <string name="custom_module">Benutzerdefiniert</string>
     <string name="new_data">Neue Daten</string>
     <string name="all_semesters">Alle Semester</string>
+    <string name="error_module_not_activated">Fehler: Modul ist nicht aktiviert. Bitte kontaktiere den Entwickler, um das Problem zu lösen.</string>
+    <string name="activated">Aktiviert</string>
+    <string name="deactivated">Deaktiviert</string>
 </resources>

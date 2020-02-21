@@ -60,6 +60,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
+
+        StorageHelper storageHelper = new StorageHelper(this);
+        if(!storageHelper.isModuleActivated(Module.TYPE_OKUSON)){ // Nur einmalig setzen falls es später mal geändert werden soll
+            storageHelper.activateModule(Module.TYPE_OKUSON);
+            storageHelper.activateModule(Module.TYPE_L2P);
+            storageHelper.activateModule(Module.TYPE_EXERCISEMANAGEMENT);
+            storageHelper.activateModule(Module.TYPE_MOODLE);
+        }
     }
 
     @Override

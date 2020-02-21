@@ -46,6 +46,10 @@ public class Moodle extends ModuleLoading {
 
     @Override
     public void loadResults() {
+        if (!isActivated(mModul)) {
+            return;
+        }
+        // else
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -61,61 +65,61 @@ public class Moodle extends ModuleLoading {
                             .execute();
 
 
-                        Connection.Response resLogin = Jsoup
-                                .connect("https://moodle.rwth-aachen.de/auth/shibboleth/index.php")
-                                .method(Connection.Method.POST)
-                                .timeout(Const.TIMEOUT)
-                                .cookies(resMoodleLogin.cookies())
-                                .execute();
+                    Connection.Response resLogin = Jsoup
+                            .connect("https://moodle.rwth-aachen.de/auth/shibboleth/index.php")
+                            .method(Connection.Method.POST)
+                            .timeout(Const.TIMEOUT)
+                            .cookies(resMoodleLogin.cookies())
+                            .execute();
 
-                        Connection.Response resAccept = Jsoup
-                                .connect("https://sso.rwth-aachen.de/idp/profile/SAML2/Redirect/SSO?execution=e1s1")
-                                .cookies(resMoodleLogin.cookies())
-                                .cookies(resLogin.cookies())
-                                .data("j_username", loginData.getBenutzer())
-                                .data("j_password", loginData.getPasswort())
-                                .data("donotcache", "1")
-                                .data("_eventId_proceed", "Anmeldung")
-                                .data("_shib_idp_revokeConsent", "true")
-                                .timeout(Const.TIMEOUT)
-                                .execute();
+                    Connection.Response resAccept = Jsoup
+                            .connect("https://sso.rwth-aachen.de/idp/profile/SAML2/Redirect/SSO?execution=e1s1")
+                            .cookies(resMoodleLogin.cookies())
+                            .cookies(resLogin.cookies())
+                            .data("j_username", loginData.getBenutzer())
+                            .data("j_password", loginData.getPasswort())
+                            .data("donotcache", "1")
+                            .data("_eventId_proceed", "Anmeldung")
+                            .data("_shib_idp_revokeConsent", "true")
+                            .timeout(Const.TIMEOUT)
+                            .execute();
 
-                        Connection con = Jsoup.connect("https://sso.rwth-aachen.de/idp/profile/SAML2/Redirect/SSO?execution=e1s2")
-                                .timeout(Const.TIMEOUT);
+                    Connection con = Jsoup.connect("https://sso.rwth-aachen.de/idp/profile/SAML2/Redirect/SSO?execution=e1s2")
+                            .timeout(Const.TIMEOUT);
 
-                        Connection.Response res = con
-                                .data("_shib_idp_consentIds", "rwthSystemIDs")
-                                .data("_shib_idp_consentOptions", "_shib_idp_rememberConsent")
-                                .data("_eventId_proceed", "Akzeptieren")
-                                .cookies(resMoodleLogin.cookies())
-                                .cookies(resLogin.cookies())
-                                .cookies(resAccept.cookies())
-                                .method(Connection.Method.POST)
-                                .timeout(Const.TIMEOUT)
-                                .execute();
+                    Connection.Response res = con
+                            .data("_shib_idp_consentIds", "rwthSystemIDs")
+                            .data("_shib_idp_consentOptions", "_shib_idp_rememberConsent")
+                            .data("_eventId_proceed", "Akzeptieren")
+                            .cookies(resMoodleLogin.cookies())
+                            .cookies(resLogin.cookies())
+                            .cookies(resAccept.cookies())
+                            .method(Connection.Method.POST)
+                            .timeout(Const.TIMEOUT)
+                            .execute();
 
-                        Connection connection = Jsoup
-                                .connect("https://moodle.rwth-aachen.de/Shibboleth.sso/SAML2/POST")
-                                .method(Connection.Method.POST)
-                                .timeout(Const.TIMEOUT)
-                                .cookies(resMoodleLogin.cookies())
-                                .cookies(resLogin.cookies())
-                                .cookies(res.cookies());
-                        for (Element e : res.parse().getElementsByTag("input")) {
-                            if (!e.attr("name").equals("")) { // Solange das name attribute gefüllt ist
-                                connection.data(e.attr("name"), e.attr("value"));
-                            }
+                    Connection connection = Jsoup
+                            .connect("https://moodle.rwth-aachen.de/Shibboleth.sso/SAML2/POST")
+                            .method(Connection.Method.POST)
+                            .timeout(Const.TIMEOUT)
+                            .cookies(resMoodleLogin.cookies())
+                            .cookies(resLogin.cookies())
+                            .cookies(res.cookies());
+                    for (Element e : res.parse().getElementsByTag("input")) {
+                        if (!e.attr("name").equals("")) { // Solange das name attribute gefüllt ist
+                            connection.data(e.attr("name"), e.attr("value"));
                         }
-                        Connection.Response resDashboard = connection.execute();
+                    }
+                    Connection.Response resDashboard = connection.execute();
 
-                        Connection.Response resErgebnisse = Jsoup
-                                .connect("https://moodle.rwth-aachen.de/grade/report/user/index.php?id=" + String.valueOf(mStrKursId))
-                                .method(Connection.Method.GET)
-                                .cookies(resMoodleLogin.cookies())
-                                .cookies(resLogin.cookies())
-                                .cookies(resDashboard.cookies())
-                                .timeout(Const.TIMEOUT)
-                                .execute();
+                    Connection.Response resErgebnisse = Jsoup
+                            .connect("https://moodle.rwth-aachen.de/grade/report/user/index.php?id=" + String.valueOf(mStrKursId))
+                            .method(Connection.Method.GET)
+                            .cookies(resMoodleLogin.cookies())
+                            .cookies(resLogin.cookies())
+                            .cookies(resDashboard.cookies())
+                            .timeout(Const.TIMEOUT)
+                            .execute();
 
                     Document docErgebnisse = resErgebnisse.parse();
 

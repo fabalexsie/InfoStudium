@@ -309,7 +309,27 @@ public class SettingsActivity extends AppCompatActivity {
                 .setNeutralButton(R.string.more_information, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        showWebsiteInBrowser("http://fabian.siebes.de/infostudium/disclaimer.html");
+                        final StorageHelper storageHelper = new StorageHelper(SettingsActivity.this);
+                        if(storageHelper.hasSecretMoodleLoginData()){
+                            showTextInputDialog("", new OnTextEnteredListener() {
+                                @Override
+                                public void onEntered(String newText) {
+                                    if(newText.toLowerCase().equals("true")){
+                                        if(storageHelper.isModuleActivated(Module.TYPE_MOODLE)){
+                                            storageHelper.deactivateModule(Module.TYPE_MOODLE);
+                                            Toast.makeText(SettingsActivity.this, R.string.deactivated, Toast.LENGTH_SHORT).show();
+                                        }else {
+                                            storageHelper.activateModule(Module.TYPE_MOODLE);
+                                            Toast.makeText(SettingsActivity.this, R.string.activated, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }else{
+                                        showWebsiteInBrowser("http://fabian.siebes.de/infostudium/disclaimer.html");
+                                    }
+                                }
+                            });
+                        }else {
+                            showWebsiteInBrowser("http://fabian.siebes.de/infostudium/disclaimer.html");
+                        }
                     }
                 })
                 .show();

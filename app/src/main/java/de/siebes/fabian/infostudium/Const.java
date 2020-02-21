@@ -12,8 +12,6 @@ import java.util.List;
 public class Const {
     public static final int TIMEOUT = 10 * 1000; // 10s
 
-    public static final boolean IS_PUBLIC_VERSION = false; // Und strings.xml anpassen (string-array: modul_types)
-
     static DecimalFormat decimalFormat;
 
     static {
@@ -38,15 +36,6 @@ public class Const {
     }
 
     public static Module getPrefilledModul(@Nullable Context c, int position) {
-        if (Const.IS_PUBLIC_VERSION) {
-            // Keine Vorschläge für Moodle-Einträge
-            if (position == 1
-                    || position == 5
-                    || position == 9) {
-                return null;
-            }
-        }
-
         Module modul = new Module();
         modul.setModulTitle(getPrefilledModuleNames(c)[position]);
 
@@ -99,11 +88,6 @@ public class Const {
                 modul.setModulType(Module.TYPE_MOODLE);
                 modul.setModulKursId("693");
                 break;
-        }
-
-        if (Const.IS_PUBLIC_VERSION && modul.getModulType() > Module.TYPE_MOODLE) {
-            // Da der erste Eintrag aus der Lsite fehlt
-            modul.setModulType(modul.getModulType() - 1);
         }
 
         return modul;

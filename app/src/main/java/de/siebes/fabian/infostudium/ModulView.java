@@ -324,6 +324,10 @@ public class ModulView extends ConstraintLayout {
                         nStrErrorText = R.string.error_no_tests;
                     }
                     break;
+                case NOT_ACTIVATED:
+                    booError = true;
+                    nStrErrorText = R.string.error_module_not_activated;
+                    break;
                 case NO_ERROR:
                     booError = false;
                     break;
@@ -336,7 +340,8 @@ public class ModulView extends ConstraintLayout {
 
             // Nur wenn ein anderer Fehler als keine Nutzerdaten oder keine Tests vorhanden auftritt
             if (!modul.getErrorCode().equals(ErrorCode.NO_LOGIN_DATA)
-                    && !modul.getErrorCode().equals(ErrorCode.NO_TESTS_FOUND)) {
+                    && !modul.getErrorCode().equals(ErrorCode.NO_TESTS_FOUND)
+                    && !modul.getErrorCode().equals(ErrorCode.NOT_ACTIVATED)) {
                 showSection(SHOWABLE_SECTION.FATAL_ERROR);
             }
         } else {

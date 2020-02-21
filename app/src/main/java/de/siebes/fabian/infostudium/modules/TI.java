@@ -48,6 +48,10 @@ public class TI extends ModuleLoading {
 
     @Override
     public void loadResults() {
+        if (!isActivated(mModul)) {
+            return;
+        }
+        // else
         new Thread() {
             @Override
             public void run() {

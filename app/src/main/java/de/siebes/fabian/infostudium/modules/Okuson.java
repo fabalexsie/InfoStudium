@@ -34,6 +34,10 @@ public class Okuson extends ModuleLoading {
 
     @Override
     public void loadResults() {
+        if (!isActivated(mModul)) {
+            return;
+        }
+        // else
         new Thread() { // Internet in another Thread
             @Override
             public void run() {

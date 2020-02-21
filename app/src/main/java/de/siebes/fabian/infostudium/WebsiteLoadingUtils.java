@@ -29,9 +29,6 @@ public class WebsiteLoadingUtils {
                 modul.setErrorCode(ErrorCode.NO_ERROR);
 
                 int modulType = modul.getModulType();
-                if(Const.IS_PUBLIC_VERSION && modulType>Module.TYPE_MOODLE){
-                    modulType--; // Da der erste Eintrag fehlt
-                }
                 switch (modulType) {
                     case Module.TYPE_MOODLE:
                         new Moodle(activity, onFinishedListener, modul).loadResults();

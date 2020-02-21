@@ -24,7 +24,6 @@ public class StorageHelper extends SQLiteOpenHelper {
     // public consts
     public static final String PRAEFIX_NAME = "praefix_name";
     public static final String PRAEFIX_NAME_DEF_VALUE = "Übung ";
-    private static final String MOODLE_SHORTEN_DATE = "shorten_date_in_moodle"; // Entfernt
     static final String SHOW_NO_RESULT = "show_no_results";
     static final boolean SHOW_NO_RESULT_DEF_VALUE = true;
     static final String LAST_NEWS_VERSION = "last_news_version";
@@ -37,10 +36,13 @@ public class StorageHelper extends SQLiteOpenHelper {
     static final String MASTER_PASS_DEF_VALUE = "";
     static final String ALLOWED_TO_LOG_ACTIVITY = "allowed_to_log_activity";
     static final boolean ALLOWED_TO_LOG_ACTIVITY_DEF_VALUE = false;
-    private static final String RESCUED_OLD_LOGINS = "rescued_old_logins"; // Zur Umstellung benötigt
-    private static final boolean RESCUED_OLD_LOGINS_DEF_VALUE = false; // Zur Umstellung benötigt
     static final String LAST_PREFILLED_MODULES_VERSION = "last_prefilled_modules_version";
     static final String LAST_PREFILLED_MODULES_VERSION_DEF_VALUE = "0";
+    static final String MODULE_TYPE_ACTIVATED = "module_type_activated_";
+    static final boolean MODULE_TYPE_ACTIVATED_DEF_VALUE = false;
+    private static final String MOODLE_SHORTEN_DATE = "shorten_date_in_moodle"; // Entfernt
+    private static final String RESCUED_OLD_LOGINS = "rescued_old_logins"; // Zur Umstellung benötigt
+    private static final boolean RESCUED_OLD_LOGINS_DEF_VALUE = false; // Zur Umstellung benötigt
     // private consts
     private static final String SHARED_PREFS = "prefs";
 
@@ -195,7 +197,16 @@ public class StorageHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    List<String> getPrefilledSemesters(){
+    void setPrefilledModules(List<Module> moduleList) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(DB_TABLE_PREFILLED_MODULS, null, null);
+        for (Module module : moduleList) {
+            ContentValues cv = getPrefilledModuleCV(module);
+            db.insert(DB_TABLE_PREFILLED_MODULS, null, cv);
+        }
+    }
+
+    List<String> getPrefilledSemesters() {
         List<String> list = new ArrayList<>();
 
         SQLiteDatabase db = getReadableDatabase();
@@ -204,8 +215,9 @@ public class StorageHelper extends SQLiteOpenHelper {
         if (cursor.moveToLast()) {
             do {
                 String strSemester = cursor.getString(cursor.getColumnIndex(DB_COLUMN_SEMESTER));
-                if(strSemester.equals("")) strSemester = mContext.getResources().getString(R.string.all_semesters);
-                if(!list.contains(strSemester)) { // SQLite group by
+                if (strSemester.equals(""))
+                    strSemester = mContext.getResources().getString(R.string.all_semesters);
+                if (!list.contains(strSemester)) { // SQLite group by
                     list.add(strSemester);
                 }
             } while (cursor.moveToPrevious());
@@ -213,15 +225,6 @@ public class StorageHelper extends SQLiteOpenHelper {
 
         cursor.close();
         return list;
-    }
-
-    void setPrefilledModules(List<Module> moduleList){
-        SQLiteDatabase db = getWritableDatabase();
-        db.delete(DB_TABLE_PREFILLED_MODULS, null, null);
-        for(Module module : moduleList){
-            ContentValues cv = getPrefilledModuleCV(module);
-            db.insert(DB_TABLE_PREFILLED_MODULS, null, cv);
-        }
     }
 
     public LoginData getLogin(Module modul) {
@@ -496,7 +499,7 @@ public class StorageHelper extends SQLiteOpenHelper {
     }
 
 
-    void removeSettings(String strKey){
+    void removeSettings(String strKey) {
         SharedPreferences.Editor e = sp.edit();
         e.remove(strKey);
         e.apply();
@@ -663,7 +666,7 @@ public class StorageHelper extends SQLiteOpenHelper {
         if (oldVersion < 2) {
             addColumnToTable(db, DB_TABLE_MODULS, DB_COLUMN_MODUL_GES_REACHED_POINTS, "REAL DEFAULT 0");
         }
-        if(oldVersion<3){
+        if (oldVersion < 3) {
             db.execSQL(DB_CREATE_TABLE_PREFILLED_MODULS);
             removeSettings(StorageHelper.MOODLE_SHORTEN_DATE);
         }
@@ -676,6 +679,28 @@ public class StorageHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + strTable + " ADD COLUMN " + strColName + " " + strTypeAndDefault);
         }
         cursor.close();
+    }
+
+    public boolean isModuleActivated(int typeMoodle) {
+        return getBoolSettings(MODULE_TYPE_ACTIVATED + typeMoodle, MODULE_TYPE_ACTIVATED_DEF_VALUE);
+    }
+
+    void activateModule(int typeMoodle) {
+        saveSettings(MODULE_TYPE_ACTIVATED + typeMoodle, true);
+    }
+
+    void deactivateModule(int typeMoodle) {
+        saveSettings(MODULE_TYPE_ACTIVATED + typeMoodle, false);
+    }
+
+    boolean hasSecretMoodleLoginData() {
+        List<LoginData> loginList = getLogins();
+        for (LoginData loginData : loginList) {
+            if (loginData.getBenutzer().equals("Moodle")
+                    && loginData.getPasswort().equals("ActivateSecretMoodleAsDeveloper"))
+                return true;
+        }
+        return false;
     }
 
     public interface OnSubmitListener {
