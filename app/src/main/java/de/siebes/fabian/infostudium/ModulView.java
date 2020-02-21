@@ -227,6 +227,7 @@ public class ModulView extends ConstraintLayout {
 
             int prozent = (int) (((float) t.getPoints() / t.getMaxPoints()) * 100);
 
+            if (t.getMaxPoints() == 0) prozent = 0;
             if (prozent < 0) prozent = 0; // Um nicht bearbeitete Tests mit 0% anzuzeigen
             String strProzent = Integer.toString(prozent) + "%";
 
@@ -424,6 +425,8 @@ public class ModulView extends ConstraintLayout {
         }
         // Durchschnitt berechnen
         int gesProzent = (int) ((float) sum / (float) sumMax * 100); // In Prozent
+
+        if (sumMax == 0) gesProzent = 0;
 
         return new TestListSummaryResult(gesProzent, sum, sumMax);
     }
