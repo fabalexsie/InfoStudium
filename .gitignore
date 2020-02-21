@@ -13,6 +13,7 @@
 bin/
 gen/
 out/
+build/intermediates/
 
 # Gradle files
 .gradle/
@@ -20,9 +21,10 @@ out/
 app/build/generated
 app/build/intermediates
 app/build/tmp
+app/build/reports
 app/build/outputs/logs
 app/build/outputs/apk/debug
-app/build/outputs/apk/**/output.json
+app/**/output.json
 
 # Local configuration file (sdk path, etc)
 local.properties
