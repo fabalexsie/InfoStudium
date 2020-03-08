@@ -3,16 +3,6 @@ package de.siebes.fabian.infostudium;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +13,18 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class SettingsEditModulsLoginsActivity extends AppCompatActivity implemen
     private FloatingActionButton mFab;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_edit_moduls_logins);
 
@@ -51,11 +53,21 @@ public class SettingsEditModulsLoginsActivity extends AppCompatActivity implemen
                     case 0:
                         List<LoginData> loginDatas = new StorageHelper(SettingsEditModulsLoginsActivity.this).getLogins();
                         if (loginDatas.size() <= 0) {
-                            Snackbar.make(view, R.string.add_login_first, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(view, R.string.add_login_first, Snackbar.LENGTH_LONG)
+                                    .addCallback(new Snackbar.Callback() {
+                                        @Override
+                                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                                            super.onDismissed(transientBottomBar, event);
+                                            // todo nicht schön aber funktioniert
+                                            reloadFragmentPage(viewPager, 1);
+                                            onClick(view);
+                                        }
+                                    })
+                                    .show();
                         } else {
                             showPrefilledModulesDialog(viewPager);
-                            break;
                         }
+                        break;
                     case 1:
                         LoginData loginData = new LoginData();
                         long loginId = new StorageHelper(SettingsEditModulsLoginsActivity.this).addLoginData(loginData);
