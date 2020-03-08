@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
@@ -38,10 +39,8 @@ public class StorageHelper extends SQLiteOpenHelper {
     static final boolean ALLOWED_TO_LOG_ACTIVITY_DEF_VALUE = false;
     static final String LAST_PREFILLED_MODULES_VERSION = "last_prefilled_modules_version";
     static final String LAST_PREFILLED_MODULES_VERSION_DEF_VALUE = "0";
-    private static final String MODULE_SELECTING_INITIATED = "module_selecting_initiated";
-    private static final boolean MODULE_SELECTING_INITIATED_DEF_VALUE = false;
     private static final String MODULE_TYPE_ACTIVATED = "module_type_activated_";
-    private static final boolean MODULE_TYPE_ACTIVATED_DEF_VALUE = false;
+    // MODULE_TYPE_ACTIVATED def Value depends on module_type
     private static final String MOODLE_SHORTEN_DATE = "shorten_date_in_moodle"; // Entfernt
     private static final String RESCUED_OLD_LOGINS = "rescued_old_logins"; // Zur Umstellung benötigt
     private static final boolean RESCUED_OLD_LOGINS_DEF_VALUE = false; // Zur Umstellung benötigt
@@ -683,16 +682,12 @@ public class StorageHelper extends SQLiteOpenHelper {
         cursor.close();
     }
 
-    public boolean isModuleSelectingInitiated() {
-        return getBoolSettings(MODULE_SELECTING_INITIATED, MODULE_SELECTING_INITIATED_DEF_VALUE);
-    }
-
-    void initiateModuleSelecting() {
-        saveSettings(MODULE_SELECTING_INITIATED, true);
-    }
-
     public boolean isModuleActivated(int typeMoodle) {
-        return getBoolSettings(MODULE_TYPE_ACTIVATED + typeMoodle, MODULE_TYPE_ACTIVATED_DEF_VALUE);
+        if(typeMoodle == Module.TYPE_MOODLE) { // Moodle standardmäßig nicht aktiviert
+            return getBoolSettings(MODULE_TYPE_ACTIVATED + typeMoodle, false);
+        } else {
+            return getBoolSettings(MODULE_TYPE_ACTIVATED + typeMoodle, true);
+        }
     }
 
     void activateModule(int typeMoodle) {

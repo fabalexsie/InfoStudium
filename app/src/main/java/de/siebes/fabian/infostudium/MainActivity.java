@@ -60,22 +60,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-
-
-        StorageHelper storageHelper = new StorageHelper(this);
-        // Nur einmalig setzen falls es später mal geändert werden soll
-        if(!storageHelper.isModuleSelectingInitiated()) {
-            storageHelper.initiateModuleSelecting();
-            // basiert auf TYPE_OKUSON für Rückwärts-Kompatibilität zur alpha version
-            if (!storageHelper.isModuleActivated(Module.TYPE_OKUSON)) {
-                // Weder OKUSON noch das SelectingVerfahren ist aktiviert (also neuer beta-Nutzer)
-                storageHelper.activateModule(Module.TYPE_OKUSON);
-                storageHelper.activateModule(Module.TYPE_L2P);
-                storageHelper.activateModule(Module.TYPE_EXERCISEMANAGEMENT);
-                // Deaktiviere moodle standardmäßig
-                storageHelper.deactivateModule(Module.TYPE_MOODLE);
-            }
-        }
     }
 
     @Override
