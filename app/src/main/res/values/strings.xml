@@ -83,10 +83,6 @@
     <string name="reload">Reload</string>
     <string name="error_saving_module">Error saving the module. Maybe you have no logindata selected.</string>
     <string name="add_login_first">Please add at first the login credentials.</string>
-    <string name="moodle" translatable="false">Moodle</string>
-    <string name="okuson" translatable="false">Okuson</string>
-    <string name="exercisems" translatable="false">Exercisemanagementsystem</string>
-    <string name="l2p" translatable="false">L2P (only TI)</string>
     <string name="custom_module">Custom</string>
     <string name="new_data">New Data</string>
     <string name="points_diff_positive" translatable="false">+%1$s</string>
@@ -98,10 +94,16 @@
     <string name="activateModuleInstruction">Instruction to activate modules</string>
     <string name="activateModuleInstruction_text">1) Create login with user: \"Moodle\" and password: \"ActivateSecretMoodleAsDeveloper\" 2) Click on \"Disclaimer and Privacy Policy\" in the settings 3) Click on \"more\" 4) Type \"TRUE\" 5) Ready</string>
     <string name="deactivateMoodleModule">Deactivate moodle</string>
+    <string name="moodle" translatable="false">Moodle</string>
+    <string name="okuson" translatable="false">Okuson</string>
+    <string name="exercisems" translatable="false">Exercisemanagementsystem</string>
+    <string name="l2p" translatable="false">L2P (only TI)</string>
+    <string name="malo_portal" translatable="false">MaLo-Portal</string>
     <string-array name="modul_types">
         <item>@string/moodle</item>
         <item>@string/okuson</item>
         <item>@string/exercisems</item>
         <item>@string/l2p</item>
+        <!--<item>@string/malo_portal</item>-->
     </string-array>
 </resources>

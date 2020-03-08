@@ -13,6 +13,7 @@ public class Module {
     public static final int TYPE_OKUSON = 1;
     public static final int TYPE_EXERCISEMANAGEMENT = 2;
     public static final int TYPE_L2P = 3;
+    public static final int TYPE_MALO = 4;
 
     private long id = -1;
     private int pos = -1;
