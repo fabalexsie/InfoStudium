@@ -83,7 +83,7 @@ public class ModulsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         int count = 0;
         for (final Module modul : storageHelper.getModuls()) {
-            View view = View.inflate(getActivity(), R.layout.list_item_module, null);
+            final View view = View.inflate(getActivity(), R.layout.list_item_module, null);
 
             TextView tvModulTitle = view.findViewById(R.id.tvTitle);
             TextView tvModulDesc = view.findViewById(R.id.tvDesc);
@@ -115,14 +115,14 @@ public class ModulsFragment extends Fragment implements SearchView.OnQueryTextLi
                     dialog.show();
                 }
             });
+            swiActivate.setChecked(modul.isActivated());
             swiActivate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    modul.setActivated(isChecked);
-                    new StorageHelper(getActivity()).updateModul(modul);
+                    setModulActivatedAndUpdateView(modul, isChecked, view);
                 }
             });
-            swiActivate.setChecked(modul.isActivated());
+            setModulActivatedAndUpdateView(modul, modul.isActivated(), view);
 
             if (count == 0) {
                 imgSortUp.setVisibility(View.INVISIBLE);
@@ -145,6 +145,18 @@ public class ModulsFragment extends Fragment implements SearchView.OnQueryTextLi
             linearLayout.addView(view);
             mModulViewList.add(view);
             count++;
+        }
+    }
+
+    private void setModulActivatedAndUpdateView(Module modul, boolean isChecked, View view) {
+        modul.setActivated(isChecked);
+        new StorageHelper(getActivity()).updateModul(modul);
+        if(isChecked){
+            view.findViewById(R.id.tvDesc).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.imgSortUp).setVisibility(View.VISIBLE);
+        }else {
+            view.findViewById(R.id.tvDesc).setVisibility(View.GONE);
+            view.findViewById(R.id.imgSortUp).setVisibility(View.GONE);
         }
     }
 
