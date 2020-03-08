@@ -17,7 +17,7 @@
     <string name="feedback">Feedback geben (Fehler, Wünsche, Anregungen, Alpha-Version)</string>
     <string name="change_value">Wert ändern</string>
     <string name="share_app">Teile die App mit anderen Nutzern</string>
-    <string name="disclaimer">Haftungsausschluss   </string>
+    <string name="disclaimer">Haftungsausschluss</string>
     <string name="choose_share_app">Teilen mit</string>
     <string name="share_app_text">Nutze diese App um deine Punkte aus den Übungen einfach und zentral abzurufen: https://play.google.com/store/apps/details?id=de.siebes.fabian.infostudium</string>
     <string name="no_warranty">Alle Angaben ohne Gewähr</string>
@@ -72,4 +72,7 @@
     <string name="error_module_not_activated">Fehler: Modul ist nicht aktiviert. Bitte kontaktiere den Entwickler, um das Problem zu lösen.</string>
     <string name="activated">Aktiviert</string>
     <string name="deactivated">Deaktiviert</string>
+    <string name="deactivateMoodleModule">Deaktiviere moodle</string>
+    <string name="activateModuleInstruction">Anleitung zum Aktivieren von Modulen</string>
+    <string name="activateModuleInstruction_text">1) Erstelle Logindaten mit dem Benutzer: \"Moodle\" und dem Passwort: \"ActivateSecretMoodleAsDeveloper\"\n2) Klick auf \"Haftungsausschluss\" in den Einstellungen\n3) Klick auf \"mehr\"\n4) Tippe \"TRUE\"\n5) Fertig</string>
 </resources>

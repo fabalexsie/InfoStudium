@@ -30,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
     TextView tvMasterpassValue, tvPraefixValue, tvNoResultValue, tvLogActivity;
     CheckBox checkShowNoResultText;
     ConstraintLayout conMasterpass, conActiveModuls, conPraefixText, conNoResultText;
-    ConstraintLayout conFeedback, conShareApp, conDisclaimer;
+    ConstraintLayout conFeedback, conShareApp, conDisclaimer, conActivateModuleInstruction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
         conFeedback = findViewById(R.id.conFeedback);
         conShareApp = findViewById(R.id.conShareApp);
         conDisclaimer = findViewById(R.id.conDisclaimer);
+        conActivateModuleInstruction = findViewById(R.id.conActivateModuleInstruction);
     }
 
     private void setOnClickListeners() {
@@ -172,6 +173,13 @@ public class SettingsActivity extends AppCompatActivity {
                 showDisclaimer();
             }
         });
+
+        conActivateModuleInstruction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showActivateModuleInstruction();
+            }
+        });
     }
 
     static void showSelectModulsActivity(Context context) {
@@ -247,6 +255,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean booLogActivity = storageHelper.getBoolSettings(StorageHelper.ALLOWED_TO_LOG_ACTIVITY, StorageHelper.ALLOWED_TO_LOG_ACTIVITY_DEF_VALUE);
         swiLogActivity.setChecked(booLogActivity);
+
+        if (storageHelper.isModuleActivated(Module.TYPE_MOODLE)) {
+            conActivateModuleInstruction.setVisibility(View.VISIBLE);
+        }else {
+            conActivateModuleInstruction.setVisibility(View.GONE);
+        }
     }
 
     private void onCheckShowNoResult_UpdateOtherView(boolean isChecked) {
@@ -317,9 +331,11 @@ public class SettingsActivity extends AppCompatActivity {
                                     if(newText.toLowerCase().equals("true")){
                                         if(storageHelper.isModuleActivated(Module.TYPE_MOODLE)){
                                             storageHelper.deactivateModule(Module.TYPE_MOODLE);
+                                            conActivateModuleInstruction.setVisibility(View.GONE);
                                             Toast.makeText(SettingsActivity.this, R.string.deactivated, Toast.LENGTH_SHORT).show();
                                         }else {
                                             storageHelper.activateModule(Module.TYPE_MOODLE);
+                                            conActivateModuleInstruction.setVisibility(View.VISIBLE);
                                             Toast.makeText(SettingsActivity.this, R.string.activated, Toast.LENGTH_SHORT).show();
                                         }
                                     }else{
@@ -330,6 +346,26 @@ public class SettingsActivity extends AppCompatActivity {
                         }else {
                             showWebsiteInBrowser("http://fabian.siebes.de/infostudium/disclaimer.html");
                         }
+                    }
+                })
+                .show();
+    }
+
+    private void showActivateModuleInstruction() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.activateModuleInstruction)
+                .setMessage(R.string.activateModuleInstruction_text)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.deactivateMoodleModule, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        storageHelper.deactivateModule(Module.TYPE_MOODLE);
+                        conActivateModuleInstruction.setVisibility(View.GONE);
                     }
                 })
                 .show();
