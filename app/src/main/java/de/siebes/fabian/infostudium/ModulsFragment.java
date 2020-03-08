@@ -78,6 +78,7 @@ public class ModulsFragment extends Fragment implements SearchView.OnQueryTextLi
         LinearLayout linearLayout = mRoot.findViewById(R.id.linlayModulTypeViews);
 
         linearLayout.removeAllViews();
+        mModulViewList.clear();
 
         StorageHelper storageHelper = new StorageHelper(getActivity());
 
