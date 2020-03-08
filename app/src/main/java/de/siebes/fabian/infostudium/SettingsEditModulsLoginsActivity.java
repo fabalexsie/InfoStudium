@@ -114,7 +114,7 @@ public class SettingsEditModulsLoginsActivity extends AppCompatActivity implemen
         ArrayAdapter prefilledSemestersAdapter
                 = new ArrayAdapter(this, android.R.layout.simple_spinner_item, strPrefilledSemesters);
         spinSemester.setAdapter(prefilledSemestersAdapter);
-        spinSemester.setSelection(1);
+        if (strPrefilledSemesters.length > 1) spinSemester.setSelection(1);
         spinSemester.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
