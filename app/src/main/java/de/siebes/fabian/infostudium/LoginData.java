@@ -1,6 +1,6 @@
 package de.siebes.fabian.infostudium;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class LoginData {
     private long id;
