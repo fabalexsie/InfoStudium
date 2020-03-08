@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             storageHelper.activateModule(Module.TYPE_OKUSON);
             storageHelper.activateModule(Module.TYPE_L2P);
             storageHelper.activateModule(Module.TYPE_EXERCISEMANAGEMENT);
-            storageHelper.activateModule(Module.TYPE_MOODLE);
+            // Deaktiviere moodle standardmäßig
+            storageHelper.deactivateModule(Module.TYPE_MOODLE);
         }
     }
 
