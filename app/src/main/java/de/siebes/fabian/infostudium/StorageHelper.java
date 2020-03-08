@@ -38,6 +38,8 @@ public class StorageHelper extends SQLiteOpenHelper {
     static final boolean ALLOWED_TO_LOG_ACTIVITY_DEF_VALUE = false;
     static final String LAST_PREFILLED_MODULES_VERSION = "last_prefilled_modules_version";
     static final String LAST_PREFILLED_MODULES_VERSION_DEF_VALUE = "0";
+    private static final String MODULE_SELECTING_INITIATED = "module_selecting_initiated";
+    private static final boolean MODULE_SELECTING_INITIATED_DEF_VALUE = false;
     private static final String MODULE_TYPE_ACTIVATED = "module_type_activated_";
     private static final boolean MODULE_TYPE_ACTIVATED_DEF_VALUE = false;
     private static final String MOODLE_SHORTEN_DATE = "shorten_date_in_moodle"; // Entfernt
@@ -679,6 +681,14 @@ public class StorageHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + strTable + " ADD COLUMN " + strColName + " " + strTypeAndDefault);
         }
         cursor.close();
+    }
+
+    public boolean isModuleSelectingInitiated() {
+        return getBoolSettings(MODULE_SELECTING_INITIATED, MODULE_SELECTING_INITIATED_DEF_VALUE);
+    }
+
+    void initiateModuleSelecting() {
+        saveSettings(MODULE_SELECTING_INITIATED, true);
     }
 
     public boolean isModuleActivated(int typeMoodle) {

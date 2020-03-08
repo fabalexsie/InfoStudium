@@ -61,13 +61,20 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
+
         StorageHelper storageHelper = new StorageHelper(this);
-        if(!storageHelper.isModuleActivated(Module.TYPE_OKUSON)){ // Nur einmalig setzen falls es später mal geändert werden soll
-            storageHelper.activateModule(Module.TYPE_OKUSON);
-            storageHelper.activateModule(Module.TYPE_L2P);
-            storageHelper.activateModule(Module.TYPE_EXERCISEMANAGEMENT);
-            // Deaktiviere moodle standardmäßig
-            storageHelper.deactivateModule(Module.TYPE_MOODLE);
+        // Nur einmalig setzen falls es später mal geändert werden soll
+        if(!storageHelper.isModuleSelectingInitiated()) {
+            storageHelper.initiateModuleSelecting();
+            // basiert auf TYPE_OKUSON für Rückwärts-Kompatibilität zur alpha version
+            if (!storageHelper.isModuleActivated(Module.TYPE_OKUSON)) {
+                // Weder OKUSON noch das SelectingVerfahren ist aktiviert (also neuer beta-Nutzer)
+                storageHelper.activateModule(Module.TYPE_OKUSON);
+                storageHelper.activateModule(Module.TYPE_L2P);
+                storageHelper.activateModule(Module.TYPE_EXERCISEMANAGEMENT);
+                // Deaktiviere moodle standardmäßig
+                storageHelper.deactivateModule(Module.TYPE_MOODLE);
+            }
         }
     }
 
@@ -182,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                         });
                     }
 
-                    if(!strLastPrefilledModulesVersion.equals(strNewestPrefilledModulesVersion)){
+                    if (!strLastPrefilledModulesVersion.equals(strNewestPrefilledModulesVersion)) {
                         loadNewPrefilledModules();
                     }
 
@@ -222,9 +229,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             String strJson = doc.text();
             JSONArray jsonArray = new JSONArray(strJson);
 
-            List<Module> prefilledModuleList =new ArrayList<>();
+            List<Module> prefilledModuleList = new ArrayList<>();
 
-            for(int i=0; i< jsonArray.length(); i++){
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObjectModule = jsonArray.getJSONObject(i);
                 Module module = new Module();
                 module.setModulTitle(jsonObjectModule.getString("title"));
@@ -329,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     protected void onStop() {
         super.onStop();
-        for(ModulView moduleView : mModulViews){
+        for (ModulView moduleView : mModulViews) {
             moduleView.saveGesReachedPoints();
         }
     }
