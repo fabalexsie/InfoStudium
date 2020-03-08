@@ -10,7 +10,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.Map;
 
 import de.siebes.fabian.infostudium.Const;
 import de.siebes.fabian.infostudium.ErrorCode;
@@ -47,7 +46,7 @@ public class MaLo extends ModuleLoading {
                             .timeout(Const.TIMEOUT)
                             .execute();
 
-                   /*Connection.Response resAccept = Jsoup
+                    Connection.Response resAccept = Jsoup
                             .connect("https://sso.rwth-aachen.de/idp/profile/SAML2/Redirect/SSO?execution=e1s1")
                             .cookies(resLogin.cookies())
                             .data("j_username", loginData.getBenutzer())
@@ -60,7 +59,7 @@ public class MaLo extends ModuleLoading {
 
                     Connection.Response res = Jsoup.connect("https://sso.rwth-aachen.de/idp/profile/SAML2/Redirect/SSO?execution=e1s2")
                             .timeout(Const.TIMEOUT)
-                            .data("_shib_idp_consentIds", "rwthSystemIDs")
+                            .data("_shib_idp_consentIds", "rwthMatrikelnummer")
                             .data("_shib_idp_consentOptions", "_shib_idp_rememberConsent")
                             .data("_eventId_proceed", "Akzeptieren")
                             .cookies(resLogin.cookies())
@@ -69,25 +68,22 @@ public class MaLo extends ModuleLoading {
                             .timeout(Const.TIMEOUT)
                             .execute();
 
-                    Connection con = Jsoup.connect("https://logic.rwth-aachen.de/malo-shib/Shibboleth.sso/SAML2/POST")
+                    Connection conErgebnisse = Jsoup.connect("https://logic.rwth-aachen.de/malo-shib/Shibboleth.sso/SAML2/POST")
                             .method(Connection.Method.POST)
-                            .timeout(Const.TIMEOUT);*/
-
-                    Connection.Response resErgebnisse = Jsoup
-                            .connect("https://logic.rwth-aachen.de/malo-shib/index.php")
-                            .method(Connection.Method.GET)
-                            .cookies(resLogin.cookies())
-                            //.cookies(resAccept.cookies())
-                            //.cookies(res.cookies())
                             .timeout(Const.TIMEOUT)
-                            .execute();
+                            .cookies(resLogin.cookies())
+                            .cookies(res.cookies());
+                    for (Element e : res.parse().getElementsByTag("input")) {
+                        if (!e.attr("name").equals("")) { // Solange das name attribute gefüllt ist
+                            conErgebnisse.data(e.attr("name"), e.attr("value"));
+                        }
+                    }
 
-                    Document docErgebnisse = resErgebnisse.parse();
+                    Document docErgebnisse = conErgebnisse.post();
 
                     int col = 0;
                     String strName = "";
-                    //Elements elements = docErgebnisse.select("table td:not(.head):not(.sum)");
-                    Elements elements = docErgebnisse.select("table td:not(.head)");
+                    Elements elements = docErgebnisse.select("table td:not(.head):not(.sum)");
                     for (Element el : elements) {
                         switch (col) {
                             case 0:

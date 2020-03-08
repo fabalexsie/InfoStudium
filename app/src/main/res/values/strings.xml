@@ -104,6 +104,6 @@
         <item>@string/okuson</item>
         <item>@string/exercisems</item>
         <item>@string/l2p</item>
-        <!--<item>@string/malo_portal</item>-->
+        <item>@string/malo_portal</item>
     </string-array>
 </resources>
