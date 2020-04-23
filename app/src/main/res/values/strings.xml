@@ -40,7 +40,7 @@
     <string name="set_ShowNoResult">Should show unfinished Tests?</string>
     <string name="error_no_username_pw">Please enter username and password.</string>
     <string name="this_shouldnt_happen">Oops, this shouldn\'t happen</string>
-    <string name="send_logcat">Send logcat</string>
+    <string name="send_logcat_and_settings">Send and open settings</string>
     <string name="sending_logcat">Thank you for your support!</string>
     <string name="close">Close</string>
     <string name="logcat">Logcat</string>
@@ -99,6 +99,7 @@
     <string name="exercisems" translatable="false">Exercisemanagementsystem</string>
     <string name="l2p" translatable="false">L2P (only TI)</string>
     <string name="malo_portal" translatable="false">MaLo-Portal</string>
+    <string name="send_logcat_and_close">Send and close app</string>
     <string-array name="modul_types">
         <item>@string/moodle</item>
         <item>@string/okuson</item>

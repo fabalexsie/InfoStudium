@@ -24,7 +24,7 @@
     <string name="set_ShowNoResult">Sollen unbearbeitete Tests angezeigt werden?</string>
     <string name="error_no_username_pw">Bitte Benutzername und Passwort eingeben.</string>
     <string name="this_shouldnt_happen">Ups, das sollte nicht passieren</string>
-    <string name="send_logcat">Logcat senden</string>
+    <string name="send_logcat_and_settings">Senden und Einstellungen öffnen</string>
     <string name="sending_logcat">Danke für deine Unterstützung!</string>
     <string name="close">Schließen</string>
     <string name="news">Neuigkeiten</string>
@@ -75,4 +75,5 @@
     <string name="deactivateMoodleModule">Deaktiviere moodle</string>
     <string name="activateModuleInstruction">Anleitung zum Aktivieren von Modulen</string>
     <string name="activateModuleInstruction_text">1) Erstelle Logindaten mit dem Benutzer: \"Moodle\" und dem Passwort: \"ActivateSecretMoodleAsDeveloper\"\n2) Klick auf \"Haftungsausschluss\" in den Einstellungen\n3) Klick auf \"mehr\"\n4) Tippe \"TRUE\"\n5) Fertig</string>
+    <string name="send_logcat_and_close">Senden und App schließen</string>
 </resources>

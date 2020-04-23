@@ -3,6 +3,7 @@ package de.siebes.fabian.infostudium;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -47,34 +48,16 @@ public class SendLogcatActivity extends Activity {
                         finish();
                     }
                 })
-                .setPositiveButton(R.string.send_logcat, new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.send_logcat_and_close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(SendLogcatActivity.this, R.string.sending_logcat, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    EditText et = vDialog.findViewById(R.id.etUserProblemDesc);
-                                    String strUserDesc = et.getText().toString();
-                                    Jsoup.connect("http://fabian.siebes.de/infostudium/logcat.php")
-                                            .data("logcat", strAppInfo + "\n\n" +
-                                                    "Beschreibung des Nutzers:\n"
-                                                    + strUserDesc + "\n\n"
-                                                    + strLog)
-                                            .data("device", strDeviceName)
-                                            .post();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                finish();
-                            }
-                        }.start();
+                        sendLogcat(vDialog, strAppInfo, strLog, strDeviceName, false);
+                    }
+                })
+                .setPositiveButton(R.string.send_logcat_and_settings, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendLogcat(vDialog, strAppInfo, strLog, strDeviceName, true);
                     }
                 });
         builder.show();
@@ -98,6 +81,39 @@ public class SendLogcatActivity extends Activity {
                 scrollView.fullScroll(ScrollView.FOCUS_DOWN);
             }
         });
+    }
+
+    void sendLogcat(final View vDialog, final String strAppInfo, final String strLog, final String strDeviceName, final boolean booShowSettings) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(SendLogcatActivity.this, R.string.sending_logcat, Toast.LENGTH_SHORT).show();
+            }
+        });
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    EditText et = vDialog.findViewById(R.id.etUserProblemDesc);
+                    String strUserDesc = et.getText().toString();
+                    Jsoup.connect("http://fabian.siebes.de/infostudium/logcat.php")
+                            .data("logcat", strAppInfo + "\n\n" +
+                                    "Beschreibung des Nutzers:\n"
+                                    + strUserDesc + "\n\n"
+                                    + strLog)
+                            .data("device", strDeviceName)
+                            .post();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (booShowSettings) {
+                    Intent i = new Intent(SendLogcatActivity.this, SettingsActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                }
+                finish();
+            }
+        }.start();
     }
 
     private String extractDeviceName() {
