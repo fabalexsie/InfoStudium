@@ -23,7 +23,7 @@ import java.util.Locale;
 
 import static de.siebes.fabian.infostudium.Const.decimalFormat;
 
-public class ModulView extends ConstraintLayout {
+public class ModuleView extends ConstraintLayout {
 
     boolean mBooShouldShowNoResult;
     private Module mModul;
@@ -31,8 +31,29 @@ public class ModulView extends ConstraintLayout {
     private boolean mBooExpandedView = false;
     private boolean mIsLoading = false;
     private SHOWABLE_SECTION mCurSection = SHOWABLE_SECTION.LOADING;
+    private View.OnClickListener expandOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mBooExpandedView = !mBooExpandedView;
+            reloadView();
+        }
+    };
+    private View.OnClickListener reloadOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            reloadData();
+        }
+    };
+    private View.OnClickListener showLogcatOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intentLogcat = new Intent(mActivity, SendLogcatActivity.class);
+            intentLogcat.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mActivity.startActivity(intentLogcat);
+        }
+    };
 
-    public ModulView(Activity activity, Module modul) {
+    public ModuleView(Activity activity, Module modul) {
         super(activity);
         inflate(activity, R.layout.modul_view, this);
 
@@ -106,7 +127,7 @@ public class ModulView extends ConstraintLayout {
             findViewById(R.id.imgNew).setVisibility(VISIBLE);
             TextView tvNewPointsDiff = findViewById(R.id.tvNewPointsDiff);
             tvNewPointsDiff.setVisibility(VISIBLE);
-            if (Double.compare(dOldGesPoints, dNewGesPoints) > 0) {
+            if (Double.compare(dNewGesPoints, dOldGesPoints) < 0) {
                 tvNewPointsDiff.setText(getResources().getString(R.string.points_diff_negative, decimalFormat.format(dOldGesPoints - dNewGesPoints)));
             } else {
                 tvNewPointsDiff.setText(getResources().getString(R.string.points_diff_positive, decimalFormat.format(dNewGesPoints - dOldGesPoints)));
@@ -181,49 +202,25 @@ public class ModulView extends ConstraintLayout {
         boolean showPoints = storageHelper.getBoolSettings(StorageHelper.SHOW_POINTS, StorageHelper.SHOW_POINTS_DEF_VALUE);
         String strNoResult = storageHelper.getStringSettings(StorageHelper.NO_RESULT_TEXT, StorageHelper.NO_RESULT_TEXT_DEF_VALUE);
 
-        int maxWidthName = 0;
-        int maxWidthProzent = 0;
-        // Schleife über alle Elemente um die maximale Breite zu bestimmen
-        for (int i = 0; i < testList.getTests().size(); i++) {
-            LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflater.inflate(R.layout.test_view, null);
-            TextView tvProzent = v.findViewById(R.id.tvProzent);
-            TextView tvName = v.findViewById(R.id.tvName);
-
-            String strName = testList.getTests().get(i).getName();
-            if (testList.getTests().size() > 9) {
-                strName = strName.concat("0");
-            }
-            tvName.setText(strName);
-
-            String strProzent = "100%";
-            if (showPoints) {
-                strProzent = strProzent.concat(" (20.0/20.0)");
-            }
-            tvProzent.setText(strProzent);
-
-
-            tvName.measure(0, 0);
-            tvProzent.measure(0, 0);
-            maxWidthName = Math.max(maxWidthName, tvName.getMeasuredWidth());
-            maxWidthProzent = Math.max(maxWidthProzent, tvProzent.getMeasuredWidth());
-        }
-
-
         // Only the header
         TestListSummaryResult testListSummaryResult = getSummaryResult(testList.getTests());
         TextView tvTitle = new TextView(mActivity);
         LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         llp.setMargins(8, 8, 8, 8); // llp.setMargins(left, top, right, bottom);
         tvTitle.setGravity(Gravity.CENTER);
-        // tvTitle.setText(String.format("%s (%d%%)", testList.getListName(), testListSummaryResult.gesProzent));
         tvTitle.setText(String.format(Locale.GERMANY, "%s %d%% (%s/%s)",
                 testList.getListName(),
                 testListSummaryResult.gesProzent,
                 decimalFormat.format(testListSummaryResult.gesPoints),
                 decimalFormat.format(testListSummaryResult.gesMaxPoints)));
+        tvTitle.setOnClickListener(expandOnClickListener);
         ((ViewGroup) findViewById(R.id.linlayTestList)).addView(tvTitle);
 
+        int maxWidthName = 0;
+        int maxWidthProzent = 0;
+        ViewGroup linlayTestView = findViewById(R.id.linlayTestList);
+        int testCounter = 0;
+        View[] newTestList = new View[testList.getTests().size()];
         for (Test t : testList.getTests()) {
             LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = inflater.inflate(R.layout.test_view, null);
@@ -232,7 +229,7 @@ public class ModulView extends ConstraintLayout {
 
             if (t.getMaxPoints() == 0) prozent = 0;
             if (prozent < 0) prozent = 0; // Um nicht bearbeitete Tests mit 0% anzuzeigen
-            String strProzent = Integer.toString(prozent) + "%";
+            String strProzent = prozent + "%";
 
             String strPoints;
             if (t.getPoints() < 0) {
@@ -250,10 +247,7 @@ public class ModulView extends ConstraintLayout {
             ProgressBar progressPoints = v.findViewById(R.id.progressPoints);
 
             tvName.setText(t.getName());
-            tvName.setWidth(maxWidthName);
-
             tvProzent.setText(strProzent);
-            tvProzent.setWidth(maxWidthProzent);
 
             progressPoints.setMax(round(t.getMaxPoints()));
             progressPoints.setProgress(round(t.getPoints())); // Negative Zahlen sind egal, kein Unterschied in der Grafik
@@ -263,8 +257,24 @@ public class ModulView extends ConstraintLayout {
                 tvName.setTextColor(Color.GRAY);
             }
 
+            tvName.measure(0, 0);
+            tvProzent.measure(0, 0);
+            maxWidthName = Math.max(maxWidthName, tvName.getMeasuredWidth());
+            maxWidthProzent = Math.max(maxWidthProzent, tvProzent.getMeasuredWidth());
 
-            ((ViewGroup) findViewById(R.id.linlayTestList)).addView(v);
+            newTestList[testCounter++] = v;
+            v.setOnClickListener(expandOnClickListener);
+            linlayTestView.addView(v);
+        }
+
+        // Resize to optimal width
+        for (View v : newTestList) {
+            if (v instanceof ViewGroup) {
+                TextView tvName = v.findViewById(R.id.tvName);
+                TextView tvProzent = v.findViewById(R.id.tvProzent);
+                tvName.setWidth(maxWidthName);
+                tvProzent.setWidth(maxWidthProzent);
+            }
         }
     }
 
@@ -280,6 +290,7 @@ public class ModulView extends ConstraintLayout {
                 testListSummaryResult.gesProzent,
                 decimalFormat.format(testListSummaryResult.gesPoints),
                 decimalFormat.format(testListSummaryResult.gesMaxPoints)));
+        tvTitle.setOnClickListener(expandOnClickListener);
         ((ViewGroup) findViewById(R.id.linlayTestList)).addView(tvTitle);
     }
 
@@ -382,49 +393,25 @@ public class ModulView extends ConstraintLayout {
     }
 
     private void setOnClickListeners() {
-        OnClickListener expandOnClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mBooExpandedView = !mBooExpandedView;
-                reloadView();
-            }
-        };
         findViewById(R.id.imgExpand).setOnClickListener(expandOnClickListener);
         findViewById(R.id.tvTitle).setOnClickListener(expandOnClickListener);
 
-        findViewById(R.id.imgShowLogcat).setOnClickListener(showLogcatOnClickListener());
+        findViewById(R.id.imgShowLogcat).setOnClickListener(showLogcatOnClickListener);
 
-        findViewById(R.id.imgReload).setOnClickListener(reloadOnClickListener());
-    }
-
-    private View.OnClickListener showLogcatOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentLogcat = new Intent(mActivity, SendLogcatActivity.class);
-                intentLogcat.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mActivity.startActivity(intentLogcat);
-            }
-        };
-    }
-
-    private View.OnClickListener reloadOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                reloadData();
-            }
-        };
+        findViewById(R.id.imgReload).setOnClickListener(reloadOnClickListener);
     }
 
     private TestListSummaryResult getSummaryResult(List<Test> tests) {
         double sum = 0;
         double sumMax = 0;
         for (Test t : tests) {
-            // Addiere nur positive Werte um nicht bearbeitete Tests nicht falsch zu verrechnen
-            if (t.getPoints() >= 0)
-                sum += t.getPoints();
-            sumMax += t.getMaxPoints();
+            // Addiere keine Tests, die nicht bewertet werden
+            if (!t.getName().toLowerCase().contains("unbewertet")) {
+                // Addiere nur positive Werte um nicht bearbeitete Tests nicht falsch zu verrechnen
+                if (t.getPoints() >= 0)
+                    sum += t.getPoints();
+                sumMax += t.getMaxPoints();
+            }
         }
         // Durchschnitt berechnen
         int gesProzent = (int) ((float) sum / (float) sumMax * 100); // In Prozent

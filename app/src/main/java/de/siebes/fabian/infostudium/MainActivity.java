@@ -36,7 +36,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private List<ModulView> mModulViews = new ArrayList<>();
+    private List<ModuleView> mModuleViews = new ArrayList<>();
 
     private boolean mReloadOnResume = true;
 
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private void addModulViews() {
         LinearLayout linlayModuls = findViewById(R.id.linlayModuls);
         linlayModuls.removeAllViews();
-        mModulViews.clear();
+        mModuleViews.clear();
 
         StorageHelper storageHelper = new StorageHelper(this);
 
@@ -93,9 +93,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             showMainInfo(MainInfoType.MODULS);
             for (Module modul : moduleList) {
                 if (modul.isActivated()) {
-                    ModulView modulView = new ModulView(this, modul);
-                    linlayModuls.addView(modulView);
-                    mModulViews.add(modulView);
+                    ModuleView moduleView = new ModuleView(this, modul);
+                    linlayModuls.addView(moduleView);
+                    mModuleViews.add(moduleView);
                 }
             }
         } else {
@@ -303,24 +303,24 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
-        for (ModulView modulView : mModulViews) {
-            reload(modulView);
+        for (ModuleView moduleView : mModuleViews) {
+            reload(moduleView);
         }
 
         checkForNews();
         // mSwipeRefreshLayout.setRefreshing(false); // in checkForNews
     }
 
-    void reload(ModulView modulViewOld) {
-        if (modulViewOld != null) {
-            modulViewOld.reloadData();
+    void reload(ModuleView moduleViewOld) {
+        if (moduleViewOld != null) {
+            moduleViewOld.reloadData();
         }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        for (ModulView moduleView : mModulViews) {
+        for (ModuleView moduleView : mModuleViews) {
             moduleView.saveGesReachedPoints();
         }
     }
