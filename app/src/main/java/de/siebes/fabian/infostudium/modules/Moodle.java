@@ -146,12 +146,17 @@ public class Moodle extends ModuleLoading {
                     int col = 0;
                     String strName = "";
                     double dPoints = 0;
-                    /*Elements elements = docErgebnisse.select("table th[id^=row_][class^=level3]," +
-                            " table td[headers$=grade][class^=level3]," +
-                            " table td[headers$=range][class^=level3]");*/
-                    Elements elements = docErgebnisse.select("table th[id^=row_].level2," +
-                            " table td[headers$=grade].level2," +
-                            " table td[headers$=range].level2");
+                    Elements elements;
+                    if (mStrKursId.equals("8277")) {
+                        // DatKom-Tests liegen in level3
+                        elements = docErgebnisse.select("table th[id^=row_][class^=level3]," +
+                                " table td[headers$=grade][class^=level3]," +
+                                " table td[headers$=range][class^=level3]");
+                    } else {
+                        elements = docErgebnisse.select("table th[id^=row_].level2," +
+                                " table td[headers$=grade].level2," +
+                                " table td[headers$=range].level2");
+                    }
                     for (Element el : elements) {
                         switch (col) {
                             case 0:
@@ -186,15 +191,27 @@ public class Moodle extends ModuleLoading {
                                 if (strName.startsWith("Test")) {
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("E-Tests", t);
+                                } else if (strName.startsWith("Selbsttest")) {
+                                    strName = strName.substring(12, strName.length() - 1);
+                                    Test t = new Test(strName, dPoints, dMaxPoints);
+                                    mModul.addTest("Selbsttest", t);
                                 } else if (strName.startsWith("Quiz ")) {
-                                    strName = strName.replace("Quiz ", "");
+                                    strName = strName.replace("Quiz ", "")
+                                            .replace("zur Vorlesung am ", "");
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Quiz", t);
-                                } else if (strName.startsWith("Gesamt") || strName.startsWith("Summe") || strName.startsWith("Punkte") || strName.startsWith("Klausur")) {
-                                    // Nicht hinzufügen
                                 } else if (strName.startsWith("Bonus")) {
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Bonus-Stufen", t);
+                                } else if (strName.startsWith("UNBEWERTET: ")) {
+                                    strName = strName.replace("UNBEWERTET: ", "");
+                                    Test t = new Test(strName, dPoints, dMaxPoints);
+                                    mModul.addTest("UNBEWERTET", t);
+                                } else if (strName.toLowerCase().contains("gesamt")
+                                        || strName.toLowerCase().contains("summe")
+                                        || strName.toLowerCase().contains("punkte")
+                                        || strName.toLowerCase().contains("klausur")) {
+                                    // Nicht hinzufügen
                                 } else {
                                     strName = strName.replace("Übungsblatt ", strPraefixName); // TODO Post-Processor erstellen und auslagern
                                     strName = strName.replace("Uebungsblatt ", strPraefixName);

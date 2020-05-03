@@ -27,7 +27,7 @@ public class Test implements Comparable<Test> {
 
     private void setName(String strName){
         this.sortValue = toLong(strName);
-        this.name = strName;
+        this.name = strName.trim();
     }
 
     String getName() {
@@ -49,6 +49,10 @@ public class Test implements Comparable<Test> {
             return 0;
     }
 
+    /**
+     * konvertiert alle ziffern in eine Zahl unabhängig von Zeichen dazwischen,
+     * wenn ein Datum im Format dd.mm.yy erkannt wird, dann wird der wert yyyymmdd zurück geliefert
+     */
     private static long toLong(String string) {
         long res = 0;
 
