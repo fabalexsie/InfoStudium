@@ -249,8 +249,10 @@ public class ModuleView extends ConstraintLayout {
             tvName.setText(t.getName());
             tvProzent.setText(strProzent);
 
-            progressPoints.setMax(round(t.getMaxPoints()));
-            progressPoints.setProgress(round(t.getPoints())); // Negative Zahlen sind egal, kein Unterschied in der Grafik
+            /*progressPoints.setMax(round(t.getMaxPoints()));
+            progressPoints.setProgress(round(t.getPoints())); // Negative Zahlen sind egal, kein Unterschied in der Grafik*/
+            progressPoints.setMax(100);
+            progressPoints.setProgress(prozent); // Negative Zahlen sind egal, kein Unterschied in der Grafik
 
             if (round(t.getMaxPoints()) <= 0) {
                 tvProzent.setTextColor(Color.GRAY);
