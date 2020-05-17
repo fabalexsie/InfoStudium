@@ -207,6 +207,10 @@ public class Moodle extends ModuleLoading {
                                     strName = strName.replace("UNBEWERTET: ", "");
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("UNBEWERTET", t);
+                                } else if (strName.startsWith("Python Coding")) {
+                                    strName = strName.replace("Python Coding ", "");
+                                    Test t = new Test(strName, dPoints, dMaxPoints);
+                                    mModul.addTest("Python Coding", t);
                                 } else if (strName.toLowerCase().contains("gesamt")
                                         || strName.toLowerCase().contains("summe")
                                         || strName.toLowerCase().contains("punkte")
