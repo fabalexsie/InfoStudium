@@ -31,6 +31,7 @@ import java.util.List;
 public class SettingsEditModulsLoginsActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
     private FloatingActionButton mFab;
+    private boolean activityVisible;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -59,8 +60,10 @@ public class SettingsEditModulsLoginsActivity extends AppCompatActivity implemen
                                         public void onDismissed(Snackbar transientBottomBar, int event) {
                                             super.onDismissed(transientBottomBar, event);
                                             // todo nicht schön aber funktioniert
-                                            reloadFragmentPage(viewPager, 1);
-                                            onClick(view);
+                                            if (activityVisible) {
+                                                reloadFragmentPage(viewPager, 1);
+                                                onClick(view);
+                                            }
                                         }
                                     })
                                     .show();
@@ -91,6 +94,18 @@ public class SettingsEditModulsLoginsActivity extends AppCompatActivity implemen
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        activityVisible = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activityVisible = true;
     }
 
     private void showPrefilledModulesDialog(final ViewPager viewPager) {
