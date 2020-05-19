@@ -217,7 +217,7 @@ public class Moodle extends ModuleLoading {
                                         || strName.toLowerCase().contains("klausur")) {
                                     // Nicht hinzufügen
                                 } else {
-                                    strName = strName.replace("Übungsblatt ", strPraefixName); // TODO Post-Processor erstellen und auslagern
+                                    strName = strName.replace("Übungsblatt ", strPraefixName); // TODO Post-Processor erstellen und templates auslagern auf server: "orig" -> "replace" : [newCategorie]
                                     strName = strName.replace("Uebungsblatt ", strPraefixName);
                                     strName = strName.replace("Blatt", strPraefixName);
                                     Test t = new Test(strName, dPoints, dMaxPoints);
