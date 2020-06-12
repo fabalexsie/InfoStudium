@@ -6,19 +6,19 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -26,11 +26,15 @@ public class SettingsActivity extends AppCompatActivity {
     StorageHelper storageHelper;
 
     // Views
-    Switch swiShowPoints, swiLogActivity;
+    Switch swiShowPoints, swiShowNoResultText, swiLogActivity;
     TextView tvMasterpassValue, tvPraefixValue, tvNoResultValue, tvLogActivity;
-    CheckBox checkShowNoResultText;
     ConstraintLayout conMasterpass, conActiveModuls, conPraefixText, conNoResultText;
     ConstraintLayout conFeedback, conShareApp, conDisclaimer, conActivateModuleInstruction;
+
+    static void showSelectModulsActivity(Context context) {
+        Intent intent = new Intent(context, SettingsEditModulsLoginsActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }
@@ -67,7 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
         tvPraefixValue = findViewById(R.id.tvPraefixValue);
         conNoResultText = findViewById(R.id.conNoResultText);
         tvNoResultValue = findViewById(R.id.tvNoResultTextValue);
-        checkShowNoResultText = findViewById(R.id.checkShowNoResult);
+        swiShowNoResultText = findViewById(R.id.swiShowNoResult);
         swiLogActivity = findViewById(R.id.swiLogActivity);
         tvLogActivity = findViewById(R.id.tvLogActivity);
         conFeedback = findViewById(R.id.conFeedback);
@@ -132,7 +136,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        checkShowNoResultText.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        swiShowNoResultText.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 onCheckShowNoResult_UpdateOtherView(isChecked);
@@ -182,12 +186,6 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    static void showSelectModulsActivity(Context context) {
-        Intent intent = new Intent(context, SettingsEditModulsLoginsActivity.class);
-        context.startActivity(intent);
-    }
-
-
     /**
      * @param strOldMasterpass
      * @return if the oldMasterpass was correct
@@ -201,7 +199,7 @@ public class SettingsActivity extends AppCompatActivity {
                     boolean sucessfulchanged = storageHelper.saveMasterpass(strOldMasterpass, strNewMasterpass);
                     if (sucessfulchanged) {
                         Toast.makeText(SettingsActivity.this, R.string.changed_masterpass, Toast.LENGTH_SHORT).show();
-                        if(strNewMasterpass.equals("")) {
+                        if (strNewMasterpass.equals("")) {
                             tvMasterpassValue.setText(R.string.masterpass_not_set);
                         } else {
                             tvMasterpassValue.setText(R.string.masterpass_set);
@@ -237,9 +235,9 @@ public class SettingsActivity extends AppCompatActivity {
         swiShowPoints.setChecked(booShowPoints);
 
         String strMasterpass = storageHelper.getStringSettings(StorageHelper.MASTER_PASS, StorageHelper.MASTER_PASS_DEF_VALUE);
-        if(strMasterpass.equals("")){
+        if (strMasterpass.equals("")) {
             tvMasterpassValue.setText(R.string.masterpass_not_set);
-        }else {
+        } else {
             tvMasterpassValue.setText(R.string.masterpass_set);
         }
 
@@ -247,7 +245,7 @@ public class SettingsActivity extends AppCompatActivity {
         tvPraefixValue.setText(strPraefix);
 
         boolean showNoResults = storageHelper.getBoolSettings(StorageHelper.SHOW_NO_RESULT, StorageHelper.SHOW_NO_RESULT_DEF_VALUE);
-        checkShowNoResultText.setChecked(showNoResults);
+        swiShowNoResultText.setChecked(showNoResults);
         onCheckShowNoResult_UpdateOtherView(showNoResults);
 
         String strNoResult = storageHelper.getStringSettings(StorageHelper.NO_RESULT_TEXT, StorageHelper.NO_RESULT_TEXT_DEF_VALUE);
@@ -258,7 +256,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (storageHelper.isModuleActivated(Module.TYPE_MOODLE)) {
             conActivateModuleInstruction.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             conActivateModuleInstruction.setVisibility(View.GONE);
         }
     }
@@ -324,26 +322,26 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         final StorageHelper storageHelper = new StorageHelper(SettingsActivity.this);
-                        if(storageHelper.hasSecretMoodleLoginData()){
+                        if (storageHelper.hasSecretMoodleLoginData()) {
                             showTextInputDialog("", new OnTextEnteredListener() {
                                 @Override
                                 public void onEntered(String newText) {
-                                    if(newText.toLowerCase().equals("true")){
-                                        if(storageHelper.isModuleActivated(Module.TYPE_MOODLE)){
+                                    if (newText.toLowerCase().equals("true")) {
+                                        if (storageHelper.isModuleActivated(Module.TYPE_MOODLE)) {
                                             storageHelper.deactivateModule(Module.TYPE_MOODLE);
                                             conActivateModuleInstruction.setVisibility(View.GONE);
                                             Toast.makeText(SettingsActivity.this, R.string.deactivated, Toast.LENGTH_SHORT).show();
-                                        }else {
+                                        } else {
                                             storageHelper.activateModule(Module.TYPE_MOODLE);
                                             conActivateModuleInstruction.setVisibility(View.VISIBLE);
                                             Toast.makeText(SettingsActivity.this, R.string.activated, Toast.LENGTH_SHORT).show();
                                         }
-                                    }else{
+                                    } else {
                                         showWebsiteInBrowser("http://fabian.siebes.de/infostudium/disclaimer.html");
                                     }
                                 }
                             });
-                        }else {
+                        } else {
                             showWebsiteInBrowser("http://fabian.siebes.de/infostudium/disclaimer.html");
                         }
                     }
