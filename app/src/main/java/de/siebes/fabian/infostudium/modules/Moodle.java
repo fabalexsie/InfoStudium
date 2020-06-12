@@ -203,6 +203,9 @@ public class Moodle extends ModuleLoading {
                                 } else if (strName.startsWith("Bonus")) {
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Bonus-Stufen", t);
+                                } else if (strName.startsWith("Aufgabe")) {
+                                    Test t = new Test(strName, dPoints, dMaxPoints);
+                                    mModul.addTest("Aufgabe", t);
                                 } else if (strName.startsWith("UNBEWERTET: ")) {
                                     strName = strName.replace("UNBEWERTET: ", "");
                                     Test t = new Test(strName, dPoints, dMaxPoints);
