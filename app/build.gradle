@@ -6,10 +6,10 @@ android {
         applicationId "de.siebes.fabian.infostudium"
         minSdkVersion 15
         targetSdkVersion 29
-        versionName '3.7'
+        versionName '3.8'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 71
+        versionCode 72
     }
     buildTypes {
         release {
@@ -29,7 +29,7 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'org.jsoup:jsoup:1.11.3'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.6'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
