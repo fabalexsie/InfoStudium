@@ -197,7 +197,8 @@ public class Moodle extends ModuleLoading {
                                     mModul.addTest("Selbsttest", t);
                                 } else if (strName.startsWith("Quiz ")) {
                                     strName = strName.replace("Quiz ", "")
-                                            .replace("zur Vorlesung am ", "");
+                                            .replace("zur Vorlesung am ", "")
+                                            .replace("zum Kapitel ", "");
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Quiz", t);
                                 } else if (strName.startsWith("Bonus")) {
