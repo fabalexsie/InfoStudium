@@ -592,6 +592,7 @@ public class StorageHelper extends SQLiteOpenHelper {
         db.execSQL(DB_CREATE_TABLE_PREFILLED_MODULS);
     }
 
+    @Deprecated
     public void rescueOldLogins() {
         // RESCUE OLD VARIABLES
         String[] strModules_Old = {"AfI", "DS", "Progra", "TI", "BuS", "DsAl", "FoSAP", "LA", "Stocha"};
@@ -615,10 +616,12 @@ public class StorageHelper extends SQLiteOpenHelper {
         e.apply();
     }
 
+    @Deprecated
     boolean hasRescuedOldLogins() {
         return sp.getBoolean(RESCUED_OLD_LOGINS, RESCUED_OLD_LOGINS_DEF_VALUE);
     }
 
+    @Deprecated
     private void rescue_login(String str_old_module, String strBenutzer, String strPassCrypt, String strSalt, boolean strActivated) {
         if (strBenutzer != null && !strBenutzer.equals("")
                 && strPassCrypt != null && !strPassCrypt.equals("")) {

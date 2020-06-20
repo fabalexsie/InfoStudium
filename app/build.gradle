@@ -6,10 +6,10 @@ android {
         applicationId "de.siebes.fabian.infostudium"
         minSdkVersion 15
         targetSdkVersion 29
-        versionName '3.8'
+        versionName '3.9'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 72
+        versionCode 73
     }
     buildTypes {
         release {
