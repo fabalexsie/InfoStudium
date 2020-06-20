@@ -14,6 +14,7 @@ public class Module {
     public static final int TYPE_EXERCISEMANAGEMENT = 2;
     public static final int TYPE_L2P = 3;
     public static final int TYPE_MALO = 4;
+    public static final int TYPE_OR_ABGABESYSTEM = 5;
 
     private long id = -1;
     private int pos = -1;

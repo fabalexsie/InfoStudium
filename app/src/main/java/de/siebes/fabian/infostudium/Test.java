@@ -17,36 +17,10 @@ public class Test implements Comparable<Test> {
         this.maxPoints = maxPoints;
     }
 
-    double getMaxPoints() {
-        return maxPoints;
-    }
-
-    double getPoints() {
-        return points;
-    }
-
-    private void setName(String strName){
-        this.sortValue = toLong(strName);
-        this.name = strName.trim();
-    }
-
-    String getName() {
-        return name;
-    }
-
-    private long getSortValue() {
-        return sortValue;
-    }
-
-    @Override
-    public int compareTo(Test other) {
-        if (other == null) return 0;
-        if (other.getSortValue() > this.getSortValue())
-            return 1;
-        else if (other.getSortValue() < this.getSortValue())
-            return -1;
-        else
-            return 0;
+    public Test(String name, String strSortValue, double points, double maxPoints) {
+        setName(name/*, strSortValue*/);
+        this.points = points;
+        this.maxPoints = maxPoints;
     }
 
     /**
@@ -70,16 +44,53 @@ public class Test implements Comparable<Test> {
             int year = (int) (res - day * 10000 - month * 100);*/
             String strDate = m.group();
             String[] strSplit = strDate.split("\\.");
-            if (strSplit.length>2) {
+            if (strSplit.length > 2) {
                 String day = strSplit[0];
                 String month = strSplit[1];
                 String year = strSplit[2];
-                res = toLong((year.length()>2 ? year : "20" + year)
-                        + (month.length()>1 ? month : "0" + month)
-                        + (day.length()>1?day:"0" + day));
+                res = toLong((year.length() > 2 ? year : "20" + year)
+                        + (month.length() > 1 ? month : "0" + month)
+                        + (day.length() > 1 ? day : "0" + day));
             }
         }
 
         return res;
+    }
+
+    double getMaxPoints() {
+        return maxPoints;
+    }
+
+    double getPoints() {
+        return points;
+    }
+
+    private void setName(String strName) {
+        this.sortValue = toLong(strName);
+        this.name = strName.trim();
+    }
+
+    private void setName(String strName, String strSortValue) {
+        this.sortValue = toLong(strSortValue);
+        this.name = strName.trim();
+    }
+
+    String getName() {
+        return name;
+    }
+
+    private long getSortValue() {
+        return sortValue;
+    }
+
+    @Override
+    public int compareTo(Test other) {
+        if (other == null) return 0;
+        if (other.getSortValue() > this.getSortValue())
+            return 1;
+        else if (other.getSortValue() < this.getSortValue())
+            return -1;
+        else
+            return 0;
     }
 }

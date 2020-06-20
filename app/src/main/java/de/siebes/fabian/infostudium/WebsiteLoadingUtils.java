@@ -5,6 +5,7 @@ import android.app.Activity;
 import de.siebes.fabian.infostudium.modules.ExercisemanagementsystemI2;
 import de.siebes.fabian.infostudium.modules.MaLo;
 import de.siebes.fabian.infostudium.modules.Moodle;
+import de.siebes.fabian.infostudium.modules.ORAbgabesystem;
 import de.siebes.fabian.infostudium.modules.Okuson;
 import de.siebes.fabian.infostudium.modules.TI;
 
@@ -45,6 +46,9 @@ public class WebsiteLoadingUtils {
                         break;
                     case Module.TYPE_MALO:
                         new MaLo(activity, onFinishedListener, modul).loadResults();
+                        break;
+                    case Module.TYPE_OR_ABGABESYSTEM:
+                        new ORAbgabesystem(activity, onFinishedListener, modul).loadResults();
                         break;
                 }
             }

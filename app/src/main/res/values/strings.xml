@@ -100,11 +100,13 @@
     <string name="l2p" translatable="false">L2P (only TI)</string>
     <string name="malo_portal" translatable="false">MaLo-Portal</string>
     <string name="send_logcat_and_close">Send and close app</string>
+    <string name="or_abgabesystem" translatable="false">OR Abgabesystem</string>
     <string-array name="modul_types">
         <item>@string/moodle</item>
         <item>@string/okuson</item>
         <item>@string/exercisems</item>
         <item>@string/l2p</item>
         <item>@string/malo_portal</item>
+        <item>@string/or_abgabesystem</item>
     </string-array>
 </resources>

@@ -1,6 +1,7 @@
 package de.siebes.fabian.infostudium;
 
 import android.content.Context;
+
 import androidx.annotation.Nullable;
 
 import java.math.RoundingMode;
@@ -114,5 +115,20 @@ public class Const {
         }
 
         return builder.toString();
+    }
+
+    public static String substrBetween(String string, String strStart, String strEnd) {
+        int iStart = 0, iEnd = string.length();
+        if (strStart != null) {
+            iStart = string.indexOf(strStart) + strStart.length();
+            if (iStart < strStart.length())
+                iStart = 0;
+        }
+        if (strEnd != null) {
+            iEnd = string.indexOf(strEnd, iStart);
+            if (iEnd < 0)
+                iEnd = string.length();
+        }
+        return string.substring(iStart, iEnd).trim();
     }
 }
