@@ -198,6 +198,7 @@ public class Moodle extends ModuleLoading {
                                 } else if (strName.startsWith("Quiz ")) {
                                     strName = strName.replace("Quiz ", "")
                                             .replace("zur Vorlesung am ", "")
+                                            .replace("zu Kapitel ", "")
                                             .replace("zum Kapitel ", "");
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Quiz", t);
