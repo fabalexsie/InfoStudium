@@ -147,16 +147,13 @@ public class Moodle extends ModuleLoading {
                     String strName = "";
                     double dPoints = 0;
                     Elements elements;
-                    if (mStrKursId.equals("8277")) {
-                        // DatKom-Tests liegen in level3
-                        elements = docErgebnisse.select("table th[id^=row_][class^=level3]," +
-                                " table td[headers$=grade][class^=level3]," +
-                                " table td[headers$=range][class^=level3]");
-                    } else {
-                        elements = docErgebnisse.select("table th[id^=row_].level2," +
-                                " table td[headers$=grade].level2," +
-                                " table td[headers$=range].level2");
-                    }
+                    // manchmal liegen die Tests in level2 und/oder in level3
+                    elements = docErgebnisse.select("table th[id^=row_][class^=level3]," +
+                            " table td[headers$=grade][class^=level3]," +
+                            " table td[headers$=range][class^=level3]");
+                    elements.addAll(docErgebnisse.select("table th[id^=row_].level2," +
+                            " table td[headers$=grade].level2," +
+                            " table td[headers$=range].level2"));
                     for (Element el : elements) {
                         switch (col) {
                             case 0:
@@ -226,7 +223,12 @@ public class Moodle extends ModuleLoading {
                                     strName = strName.replace("Uebungsblatt ", strPraefixName);
                                     strName = strName.replace("Blatt", strPraefixName);
                                     Test t = new Test(strName, dPoints, dMaxPoints);
-                                    mModul.addTestSchriftlich(t);
+                                    // QM sonderbehandlung der E-Tests
+                                    if(mModul.getModulKursId().equals("7037") && el.attr("class").contains("level3")){
+                                        mModul.addTest("E-Tests", t);
+                                    }else {
+                                        mModul.addTestSchriftlich(t);
+                                    }
                                 }
                                 break;
                         }
