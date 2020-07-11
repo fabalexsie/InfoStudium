@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/conContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,8 +26,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:text="Modul"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        tools:text="Module"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         app:layout_constraintBottom_toTopOf="@+id/linLayMsgs"
         app:layout_constraintStart_toEndOf="@id/imgExpand"
         app:layout_constraintTop_toTopOf="parent" />
@@ -45,16 +46,17 @@
 
     <TextView
         android:id="@+id/tvNewPointsDiff"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:layout_constraintStart_toEndOf="@+id/imgNew"
-        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
-        android:text="+19.5"
-        android:textSize="16sp"
+        tools:text="+19.5"
         android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="@+id/tvTitle"/>
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+        app:layout_constraintEnd_toStartOf="@+id/imgShowLogcat"
+        app:layout_constraintStart_toEndOf="@+id/imgNew"
+        app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
     <ImageView
         android:id="@+id/imgReload"

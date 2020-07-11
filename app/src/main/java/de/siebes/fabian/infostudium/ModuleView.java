@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -205,8 +206,8 @@ public class ModuleView extends ConstraintLayout {
         // Only the header
         TestListSummaryResult testListSummaryResult = getSummaryResult(testList.getTests());
         TextView tvTitle = new TextView(mActivity);
-        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        llp.setMargins(8, 8, 8, 8); // llp.setMargins(left, top, right, bottom);
+        tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        tvTitle.setLayoutParams(getLayParamsWithMarginInDp(1, 16, 1, 1));
         tvTitle.setGravity(Gravity.CENTER);
         tvTitle.setText(String.format(Locale.GERMANY, "%s %d%% (%s/%s)",
                 testList.getListName(),
@@ -284,9 +285,8 @@ public class ModuleView extends ConstraintLayout {
         // TestList-Title
         TestListSummaryResult testListSummaryResult = getSummaryResult(testList.getTests());
         TextView tvTitle = new TextView(mActivity);
-        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        llp.setMargins(16, 8, 8, 8); // llp.setMargins(left, top, right, bottom);
-        tvTitle.setGravity(Gravity.LEFT);
+        tvTitle.setLayoutParams(getLayParamsWithMarginInDp(8, 1, 8, 1));
+        tvTitle.setGravity(Gravity.START);
         tvTitle.setText(String.format(Locale.GERMANY, "%s %d%% (%s/%s)",
                 testList.getListName(),
                 testListSummaryResult.gesProzent,
@@ -294,6 +294,13 @@ public class ModuleView extends ConstraintLayout {
                 decimalFormat.format(testListSummaryResult.gesMaxPoints)));
         tvTitle.setOnClickListener(expandOnClickListener);
         ((ViewGroup) findViewById(R.id.linlayTestList)).addView(tvTitle);
+    }
+
+    private ViewGroup.LayoutParams getLayParamsWithMarginInDp(int left, int top, int right, int bottom) {
+        float scale = getResources().getDisplayMetrics().density;
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        llp.setMargins((int) (left * scale + 0.5f), (int) (top * scale + 0.5f), (int) (right * scale + 0.5f), (int) (bottom * scale + 0.5f));
+        return llp;
     }
 
     private void showLoading(boolean shouldShowLoading, @Nullable Module modul) {
