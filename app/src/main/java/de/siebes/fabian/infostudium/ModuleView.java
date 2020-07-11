@@ -419,7 +419,8 @@ public class ModuleView extends ConstraintLayout {
                 // Addiere nur positive Werte um nicht bearbeitete Tests nicht falsch zu verrechnen
                 if (t.getPoints() >= 0)
                     sum += t.getPoints();
-                sumMax += t.getMaxPoints();
+                if (t.getMaxPoints() >= 0)
+                    sumMax += t.getMaxPoints();
             }
         }
         // Durchschnitt berechnen
