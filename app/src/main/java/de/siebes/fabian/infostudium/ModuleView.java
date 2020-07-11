@@ -206,7 +206,7 @@ public class ModuleView extends ConstraintLayout {
         // Only the header
         TestListSummaryResult testListSummaryResult = getSummaryResult(testList.getTests());
         TextView tvTitle = new TextView(mActivity);
-        tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         tvTitle.setLayoutParams(getLayParamsWithMarginInDp(1, 16, 1, 1));
         tvTitle.setGravity(Gravity.CENTER);
         tvTitle.setText(String.format(Locale.GERMANY, "%s %d%% (%s/%s)",
