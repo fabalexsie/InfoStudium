@@ -1,3 +1,4 @@
+![Build apk](https://github.com/fabalexsie/InfoStudium/workflows/Build%20apk/badge.svg)
 # Info Studium
 Android-App zum Abrufen der Punkte aus den Übungsblättern für Studenten der RWTH
 
