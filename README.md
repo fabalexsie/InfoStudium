@@ -10,4 +10,4 @@ Die Module aus den Semestern können einfach ausgewählt werden, weitere Module 
 * MaLo-Portal (MaLo)
 * Exercisemanagementsystem (z.B.: Progra (WS18))
 * TI im L2P (veraltet aus WS18)
-* Moodle (nur auf Anfrage, nicht im [PlayStore](https://play.google.com/store/apps/details?id=de.siebes.fabian.infostudium "Info Studium im PlayStore") enthalten)
+* Moodle (nur auf Anfrage im [PlayStore](https://play.google.com/store/apps/details?id=de.siebes.fabian.infostudium "Info Studium im PlayStore") enthalten)
