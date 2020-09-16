@@ -83,7 +83,7 @@ public class MaLo extends ModuleLoading {
 
                     int col = 0;
                     String strName = "";
-                    Elements elements = docErgebnisse.select("table td:not(.head):not(.sum)");
+                    Elements elements = docErgebnisse.select("table:first-of-type td:not(.head):not(.sum)");
                     for (Element el : elements) {
                         switch (col) {
                             case 0:
@@ -97,10 +97,13 @@ public class MaLo extends ModuleLoading {
                                 double dPoints, dGesPoints;
                                 try {
                                     dPoints = Double.parseDouble(strPoints);
-                                    dGesPoints = Double.parseDouble(strGesPoints);
                                 } catch (Exception e) {
                                     dPoints = -2;
-                                    dGesPoints = -2;
+                                }
+                                try {
+                                dGesPoints = Double.parseDouble(strGesPoints);
+                        } catch (Exception e) {
+                                dGesPoints = -2;
                                 }
                                 if (col == 1) {
                                     mModul.addTestSchriftlich(new Test(strName, dPoints, dGesPoints));
