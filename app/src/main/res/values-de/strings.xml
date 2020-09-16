@@ -74,6 +74,6 @@
     <string name="deactivated">Deaktiviert</string>
     <string name="deactivateMoodleModule">Deaktiviere moodle</string>
     <string name="activateModuleInstruction">Anleitung zum Aktivieren von Modulen</string>
-    <string name="activateModuleInstruction_text">1) Erstelle Logindaten mit dem Benutzer: \"Moodle\" und dem Passwort: \"ActivateSecretMoodleAsDeveloper\"\n2) Klick auf \"Haftungsausschluss\" in den Einstellungen\n3) Klick auf \"mehr\"\n4) Tippe \"TRUE\"\n5) Fertig</string>
+    <string name="activateModuleInstruction_text">1) Erstelle Logindaten mit dem Benutzer: \"Moodle\" und dem Passwort: \"ActivateSecret\"\n2) Klick auf \"Haftungsausschluss\" in den Einstellungen\n3) Klick auf \"mehr\"\n4) Tippe \"TRUE\"\n5) Fertig</string>
     <string name="send_logcat_and_close">Senden und App schließen</string>
 </resources>

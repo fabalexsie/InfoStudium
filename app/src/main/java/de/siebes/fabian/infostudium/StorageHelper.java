@@ -703,7 +703,7 @@ public class StorageHelper extends SQLiteOpenHelper {
         List<LoginData> loginList = getLogins();
         for (LoginData loginData : loginList) {
             if (loginData.getBenutzer().equals("Moodle")
-                    && loginData.getPasswort().equals("ActivateSecretMoodleAsDeveloper"))
+                    && loginData.getPasswort().equals("ActivateSecret"))
                 return true;
         }
         return false;
