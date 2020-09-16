@@ -130,7 +130,6 @@ public class Moodle extends ModuleLoading {
                 try {
                     StorageHelper storageHelper = new StorageHelper(mActivity);
                     LoginData loginData = storageHelper.getLogin(mModul);
-                    String strPraefixName = storageHelper.getStringSettings(StorageHelper.PRAEFIX_NAME, StorageHelper.PRAEFIX_NAME_DEF_VALUE);
 
                     Map<String, String> cookies = getLoginCookies(loginData);
 
@@ -163,12 +162,7 @@ public class Moodle extends ModuleLoading {
                                 if (el.text().equals("-")) {
                                     dPoints = -1;
                                 } else {
-                                    String strPoints = el.text().replace(',', '.');
-                                    try {
-                                        dPoints = Double.parseDouble(strPoints);
-                                    } catch (Exception e) {
-                                        dPoints = -2;
-                                    }
+                                    dPoints = DataProcessing.getDouble(el.text());
                                 }
                                 break;
                             case 2:
@@ -178,13 +172,7 @@ public class Moodle extends ModuleLoading {
                                 } else {
                                     strMaxPoints = "0";
                                 }
-                                strMaxPoints = strMaxPoints.replace(',', '.');
-                                double dMaxPoints;
-                                try {
-                                    dMaxPoints = Double.parseDouble(strMaxPoints);
-                                } catch (Exception e) {
-                                    dMaxPoints = -2;
-                                }
+                                double dMaxPoints = DataProcessing.getDouble(strMaxPoints);
                                 if (strName.startsWith("Test")) {
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("E-Tests", t);
@@ -193,10 +181,6 @@ public class Moodle extends ModuleLoading {
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Selbsttest", t);
                                 } else if (strName.startsWith("Quiz ")) {
-                                    strName = strName.replace("Quiz ", "")
-                                            .replace("zur Vorlesung am ", "")
-                                            .replace("zu Kapitel ", "")
-                                            .replace("zum Kapitel ", "");
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Quiz", t);
                                 } else if (strName.startsWith("Bonus")) {
@@ -206,11 +190,9 @@ public class Moodle extends ModuleLoading {
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Aufgabe", t);
                                 } else if (strName.startsWith("UNBEWERTET: ")) {
-                                    strName = strName.replace("UNBEWERTET: ", "");
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("UNBEWERTET", t);
                                 } else if (strName.startsWith("Python Coding")) {
-                                    strName = strName.replace("Python Coding ", "");
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Python Coding", t);
                                 } else if (strName.toLowerCase().contains("gesamt")
@@ -219,16 +201,8 @@ public class Moodle extends ModuleLoading {
                                         || strName.toLowerCase().contains("klausur")) {
                                     // Nicht hinzufügen
                                 } else {
-                                    strName = strName.replace("Übungsblatt ", strPraefixName); // TODO Post-Processor erstellen und templates auslagern auf server: "orig" -> "replace" : [newCategorie]
-                                    strName = strName.replace("Uebungsblatt ", strPraefixName);
-                                    strName = strName.replace("Blatt", strPraefixName);
                                     Test t = new Test(strName, dPoints, dMaxPoints);
-                                    // QM sonderbehandlung der E-Tests
-                                    if(mModul.getModulKursId().equals("7037") && el.attr("class").contains("level3")){
-                                        mModul.addTest("E-Tests", t);
-                                    }else {
-                                        mModul.addTestSchriftlich(t);
-                                    }
+                                    mModul.addTestSchriftlich(t);
                                 }
                                 break;
                         }

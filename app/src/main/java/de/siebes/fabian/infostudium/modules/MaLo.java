@@ -92,19 +92,9 @@ public class MaLo extends ModuleLoading {
                             case 1:
                             case 2:
                                 String[] strPointSplit = el.text().split(" / ");
-                                String strPoints = strPointSplit[0].replace(',', '.');
-                                String strGesPoints = strPointSplit[1].replace(',', '.');
-                                double dPoints, dGesPoints;
-                                try {
-                                    dPoints = Double.parseDouble(strPoints);
-                                } catch (Exception e) {
-                                    dPoints = -2;
-                                }
-                                try {
-                                dGesPoints = Double.parseDouble(strGesPoints);
-                        } catch (Exception e) {
-                                dGesPoints = -2;
-                                }
+                                double dPoints = DataProcessing.getDouble(strPointSplit[0]);
+                                double dGesPoints = DataProcessing.getDouble(strPointSplit[1]);
+
                                 if (col == 1) {
                                     mModul.addTestSchriftlich(new Test(strName, dPoints, dGesPoints));
                                 } else {

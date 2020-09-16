@@ -46,6 +46,43 @@ public class TI extends ModuleLoading {
         mModul = modul;
     }
 
+    /**
+     * Computes the NT hashed version of a password.
+     *
+     * @param password the user password
+     * @return the NT hashed version of the password in a 16-bytes array
+     * @throws IllegalArgumentException if the supplied password is null
+     */
+    private static byte[] computeNTPassword(String password) throws IllegalArgumentException {
+        if (password == null)
+            throw new IllegalArgumentException("password : null value not allowed");
+        //Gets the first 14-bytes of the UNICODE password
+        int len = password.length();
+        if (len > 14)
+            len = 14;
+        byte[] nt_pw = new byte[2 * len];
+        for (int i = 0; i < len; i++) {
+            char ch = password.charAt(i);
+            nt_pw[2 * i] = getLoByte(ch);
+            nt_pw[2 * i + 1] = getHiByte(ch);
+        }
+
+        //Return its MD4 digest as the hashed version
+        MD4Digest md4 = new MD4Digest();
+        md4.update(nt_pw, 0, nt_pw.length);
+        byte[] md4_pw = new byte[md4.getDigestSize()];
+        md4.doFinal(md4_pw, 0);
+        return md4_pw;
+    }
+
+    private static byte getHiByte(char c) {
+        return (byte) ((c >>> 8) & 0xFF);
+    }
+
+    private static byte getLoByte(char c) {
+        return (byte) c;
+    }
+
     @Override
     public void loadResults() {
         if (!isActivated(mModul)) {
@@ -57,7 +94,6 @@ public class TI extends ModuleLoading {
             public void run() {
                 StorageHelper storageHelper = new StorageHelper(mActivity);
                 LoginData loginData = storageHelper.getLogin(mModul);
-                String strPraefixName = storageHelper.getStringSettings(StorageHelper.PRAEFIX_NAME, StorageHelper.PRAEFIX_NAME_DEF_VALUE);
 
                 String strUser = loginData.getBenutzer();
                 String strPassword = loginData.getPasswort();
@@ -99,28 +135,18 @@ public class TI extends ModuleLoading {
                         switch (col) {
                             case 0:
                                 if (el.text().startsWith("Summe für den Kurs")) break checkAllTests;
-                                strName = el.text().replace("Übungsblatt ", strPraefixName);
+                                strName = el.text();
                                 break;
                             case 1:
                                 if (el.text().equals("-")) {
                                     dPoints = -1;
                                 } else {
-                                    String strPoints = el.text().replace(',', '.');
-                                    try {
-                                        dPoints = Double.parseDouble(strPoints);
-                                    } catch (Exception e) {
-                                        dPoints = -2;
-                                    }
+                                    dPoints = DataProcessing.getDouble(el.text());
                                 }
                                 break;
                             case 2:
                                 String strMaxPoints = el.text().split("–")[1];
-                                double dMaxPoints;
-                                try {
-                                    dMaxPoints = Double.parseDouble(strMaxPoints);
-                                } catch (Exception e) {
-                                    dMaxPoints = -2;
-                                }
+                                double dMaxPoints = DataProcessing.getDouble(strMaxPoints);
                                 Test t = new Test(strName, dPoints, dMaxPoints);
                                 if (strName.contains("Bonus")) {
                                     mModul.addTest("Bonus-Tests", t);
@@ -153,7 +179,6 @@ public class TI extends ModuleLoading {
             }
         }.start();
     }
-
 
     private String getAccessToken(String strUser, String strPassword) throws Exception {
         ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
@@ -269,42 +294,5 @@ public class TI extends ModuleLoading {
         // Process
         strAccessToken = strAccessToken.split("\"")[0]; // Alles vor dem '"'
         return strAccessToken;
-    }
-
-    /**
-     * Computes the NT hashed version of a password.
-     *
-     * @param password the user password
-     * @return the NT hashed version of the password in a 16-bytes array
-     * @throws IllegalArgumentException if the supplied password is null
-     */
-    private static byte[] computeNTPassword(String password) throws IllegalArgumentException {
-        if (password == null)
-            throw new IllegalArgumentException("password : null value not allowed");
-        //Gets the first 14-bytes of the UNICODE password
-        int len = password.length();
-        if (len > 14)
-            len = 14;
-        byte[] nt_pw = new byte[2 * len];
-        for (int i = 0; i < len; i++) {
-            char ch = password.charAt(i);
-            nt_pw[2 * i] = getLoByte(ch);
-            nt_pw[2 * i + 1] = getHiByte(ch);
-        }
-
-        //Return its MD4 digest as the hashed version
-        MD4Digest md4 = new MD4Digest();
-        md4.update(nt_pw, 0, nt_pw.length);
-        byte[] md4_pw = new byte[md4.getDigestSize()];
-        md4.doFinal(md4_pw, 0);
-        return md4_pw;
-    }
-
-    private static byte getHiByte(char c) {
-        return (byte) ((c >>> 8) & 0xFF);
-    }
-
-    private static byte getLoByte(char c) {
-        return (byte) c;
     }
 }

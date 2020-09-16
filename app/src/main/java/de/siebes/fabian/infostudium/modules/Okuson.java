@@ -44,7 +44,6 @@ public class Okuson extends ModuleLoading {
                 try {
                     StorageHelper storageHelper = new StorageHelper(mActivity);
                     LoginData loginData = storageHelper.getLogin(mModul);
-                    String strPraefixName = storageHelper.getStringSettings(StorageHelper.PRAEFIX_NAME, StorageHelper.PRAEFIX_NAME_DEF_VALUE);
 
                     if (mStrUrl == null) return;
                     Connection con = Jsoup.connect(mStrUrl)
@@ -76,19 +75,11 @@ public class Okuson extends ModuleLoading {
                                     if (strTemp[0].trim().equals("?")) {
                                         points = -1;
                                     } else {
-                                        try {
-                                            points = Double.parseDouble(strTemp[0].trim());
-                                        } catch (Exception e) {
-                                            points = -2;
-                                        }
+                                        points = DataProcessing.getDouble(strTemp[0]);
                                     }
                                     // Zahl nach "(" ohne das letzte Zeichen ")"
-                                    try {
-                                        maxPoints = Double.parseDouble(strTemp[1].substring(0, strTemp[1].length() - 1).trim());
-                                    } catch (Exception e) {
-                                        maxPoints = 0;
-                                    }
-                                    Test t = new Test(strPraefixName + testName, points, maxPoints);
+                                    maxPoints = DataProcessing.getDouble(strTemp[1].substring(0, strTemp[1].length() - 1));
+                                    Test t = new Test(testName, points, maxPoints);
                                     if (col == 1)
                                         mModul.addTestOnline(t);
                                     else

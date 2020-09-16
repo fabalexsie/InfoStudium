@@ -3,6 +3,8 @@ package de.siebes.fabian.infostudium;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.siebes.fabian.infostudium.modules.DataProcessing;
+
 public class Test implements Comparable<Test> {
     private static Pattern p = Pattern.compile("\\d{1,2}\\.\\d{1,2}\\.\\d{2,4}");
 
@@ -18,7 +20,7 @@ public class Test implements Comparable<Test> {
     }
 
     public Test(String name, String strSortValue, double points, double maxPoints) {
-        setName(name/*, strSortValue*/);
+        setName(name, strSortValue);
         this.points = points;
         this.maxPoints = maxPoints;
     }
@@ -65,18 +67,18 @@ public class Test implements Comparable<Test> {
         return points;
     }
 
-    private void setName(String strName) {
-        this.sortValue = toLong(strName);
-        this.name = strName.trim();
-    }
-
     private void setName(String strName, String strSortValue) {
         this.sortValue = toLong(strSortValue);
-        this.name = strName.trim();
+        this.name = DataProcessing.parseTestName(strName);
     }
 
     String getName() {
         return name;
+    }
+
+    private void setName(String strName) {
+        this.sortValue = toLong(strName);
+        this.name = DataProcessing.parseTestName(strName);
     }
 
     private long getSortValue() {

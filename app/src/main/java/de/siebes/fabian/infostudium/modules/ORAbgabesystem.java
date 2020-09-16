@@ -53,7 +53,7 @@ public class ORAbgabesystem extends ModuleLoading {
                     connection.data("username", loginData.getBenutzer());
                     connection.data("password", loginData.getPasswort());
                     connection.header("Referer", "https://tutor.or.rwth-aachen.de/accounts/login/");
-                    connection.header("Accept-Language","de");
+                    connection.header("Accept-Language", "de");
                     Document doc = connection.post();
 
                     String strName = "", strDate = "";
@@ -68,25 +68,13 @@ public class ORAbgabesystem extends ModuleLoading {
                                 if (el.text().contains("Maximal erreichbar")) {
                                     dPoints = 0;
                                     String maxPoints = Const.substrBetween(el.text(), "Maximal erreichbar:", null);
-                                    try {
-                                        dMaxPoints = Double.parseDouble(maxPoints);
-                                    } catch (Exception e) {
-                                        dMaxPoints = -2;
-                                    }
+                                    dMaxPoints = DataProcessing.getDouble(maxPoints);
                                     strDate = Const.substrBetween(el.html(), "Fällig bis:", "<br>");
                                 } else if (el.text().contains("Bewertung")) {
                                     String strPoints = Const.substrBetween(el.text(), "Bewertung:", "/");
-                                    try {
-                                        dPoints = Double.parseDouble(strPoints);
-                                    } catch (Exception e) {
-                                        dPoints = -2;
-                                    }
+                                    dPoints = DataProcessing.getDouble(strPoints);
                                     String strMaxPoints = Const.substrBetween(el.text(), "/", null);
-                                    try {
-                                        dMaxPoints = Double.parseDouble(strMaxPoints);
-                                    } catch (Exception e) {
-                                        dMaxPoints = -2;
-                                    }
+                                    dMaxPoints = DataProcessing.getDouble(strMaxPoints);
                                     strDate = Const.substrBetween(el.html(), "Beendet:", "<br>");
                                 } else {
                                     dPoints = dMaxPoints = -3;

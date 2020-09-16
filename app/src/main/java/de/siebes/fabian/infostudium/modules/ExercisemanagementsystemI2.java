@@ -43,7 +43,6 @@ public class ExercisemanagementsystemI2 extends ModuleLoading {
                 try {
                     StorageHelper storageHelper = new StorageHelper(mActivity);
                     LoginData loginData = storageHelper.getLogin(mModul);
-                    String strPraefixName = storageHelper.getStringSettings(StorageHelper.PRAEFIX_NAME, StorageHelper.PRAEFIX_NAME_DEF_VALUE);
 
                     Connection conLogin = Jsoup.connect(mActivity.getString(R.string.url_exmanag_login, mStrKursName))
                             .method(Connection.Method.POST)
@@ -98,25 +97,15 @@ public class ExercisemanagementsystemI2 extends ModuleLoading {
                                     if (strTemp[0].trim().equals("--")) {
                                         points = -1;
                                     } else {
-                                        try {
-                                            points = Double.parseDouble(strTemp[0].trim());
-                                        } catch (Exception e) {
-                                            points = -2;
-                                        }
+                                        points = DataProcessing.getDouble(strTemp[0]);
                                     }
                                     // Zahl nach "(" ohne das letzte Zeichen ")"
-                                    try {
-                                        maxPoints = Double.parseDouble(strTemp[1].substring(0, strTemp[1].length() - 1).trim());
-                                    } catch (Exception e) {
-                                        maxPoints = 0;
-                                    }
+                                    maxPoints = DataProcessing.getDouble(strTemp[1].substring(0, strTemp[1].length() - 1));
 
                                     if (strTestName.startsWith("Minitest ")) {
-                                        strTestName = strTestName.replace("Minitest ", strPraefixName);
                                         Test t = new Test(strTestName, points, maxPoints);
                                         mModul.addTest("Minitest", t);
                                     } else {
-                                        strTestName = strTestName.replace("Übungsblatt ", strPraefixName);
                                         Test t = new Test(strTestName, points, maxPoints);
                                         mModul.addTestSchriftlich(t);
                                     }
