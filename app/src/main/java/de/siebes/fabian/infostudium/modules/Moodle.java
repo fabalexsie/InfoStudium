@@ -1,6 +1,7 @@
 package de.siebes.fabian.infostudium.modules;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import org.jsoup.Connection;
@@ -19,6 +20,8 @@ import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.SSLContext;
@@ -116,6 +119,56 @@ public class Moodle extends ModuleLoading {
             booIsLogedIn = true;
         }
         return cookies;
+    }
+
+    public static List<Module> getModuleList(Context c, LoginData loginData) {
+        List<Module> moduleList = new ArrayList<>();
+        try {
+            Map<String, String> cookies = getLoginCookies(loginData);
+
+            Document docDashboard = Jsoup
+                    .connect("https://moodle.rwth-aachen.de/my/")
+                    .cookies(cookies)
+                    .timeout(Const.TIMEOUT)
+                    .get();
+
+            // die sichtbaren Kurse
+            for (Element el : docDashboard.select("#coc-courselist .hidecoursediv:not(.coc-hidden) h3 a")) {
+                Module module = new Module(el.text().substring(0, 27) + "...");
+                String strLink = el.attr("href");
+                String strKursId = strLink.substring(strLink.indexOf("?id=") + "?id=".length()).trim();
+
+                module.setModulDesc(el.text().trim());
+                module.setModulKursId(strKursId);
+                module.setSemester(c.getString(R.string.loadFromMoodle));
+                moduleList.add(module);
+            }
+
+            // die ausgeblendeten Kurse
+            for (Element el : docDashboard.select("#coc-courselist .hidecoursediv.coc-hidden h3 a")) {
+                Module module = new Module("---"); // no title to visualize a bit the hidden state
+                String strLink = el.attr("href");
+                String strKursId = strLink.substring(strLink.indexOf("?id=") + "?id=".length()).trim();
+
+                module.setModulDesc(el.text().trim());
+                module.setModulKursId(strKursId);
+                module.setSemester(c.getString(R.string.loadFromMoodle));
+                moduleList.add(module);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if (moduleList.isEmpty()) {
+            Module module = new Module(c.getString(R.string.no_module_found_in_dashboard_title));
+            module.setModulDesc(c.getString(R.string.no_module_found_in_dashboard_desc));
+            moduleList.add(module);
+        }
+
+        return moduleList;
     }
 
     @Override

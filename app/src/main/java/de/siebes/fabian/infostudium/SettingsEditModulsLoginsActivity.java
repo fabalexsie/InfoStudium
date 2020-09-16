@@ -3,12 +3,14 @@ package de.siebes.fabian.infostudium;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,10 +30,13 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.siebes.fabian.infostudium.modules.Moodle;
+
 public class SettingsEditModulsLoginsActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
     private FloatingActionButton mFab;
     private boolean activityVisible;
+    private LoginData moodleLogin;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -116,24 +121,56 @@ public class SettingsEditModulsLoginsActivity extends AppCompatActivity implemen
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         View viewDialog = inflater.inflate(R.layout.dia_choose_prefilled_module, null);
 
-        ListView lvPrefilledModules = viewDialog.findViewById(R.id.lvPrefilledModules);
-        StorageHelper storageHelper = new StorageHelper(this);
+        final ProgressBar progLoading = viewDialog.findViewById(R.id.progLoading);
+        Spinner spinSemester = viewDialog.findViewById(R.id.spinSemester);
+        final ListView lvPrefilledModules = viewDialog.findViewById(R.id.lvPrefilledModules);
+        final StorageHelper storageHelper = new StorageHelper(this);
 
         final List<Module> moduleList_forFiltering = storageHelper.getPrefilledModules();
         final MyPrefilledModuleAdapter myPrefilledModuleAdapter
                 = new MyPrefilledModuleAdapter(this, moduleList_forFiltering);
         lvPrefilledModules.setAdapter(myPrefilledModuleAdapter);
 
-        Spinner spinSemester = viewDialog.findViewById(R.id.spinSemester);
-        final String[] strPrefilledSemesters = storageHelper.getPrefilledSemesters().toArray(new String[]{});
-        ArrayAdapter prefilledSemestersAdapter
-                = new ArrayAdapter(this, android.R.layout.simple_spinner_item, strPrefilledSemesters);
+        List<String> prefilledList = storageHelper.getPrefilledSemesters();
+        prefilledList.add(getString(R.string.loadFromMoodle));
+
+        final String[] strPrefilledSemesters = prefilledList.toArray(new String[]{});
+        ArrayAdapter<String> prefilledSemestersAdapter
+                = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, strPrefilledSemesters);
         spinSemester.setAdapter(prefilledSemestersAdapter);
         if (strPrefilledSemesters.length > 1) spinSemester.setSelection(1);
         spinSemester.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                myPrefilledModuleAdapter.filterSemester(strPrefilledSemesters[position]);
+                if (getString(R.string.loadFromMoodle).equals(strPrefilledSemesters[position])) {
+                    // moodle Einträge laden
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setLoading(true);
+                        }
+                    }, 500); // Delayed weil der Dialog die Größe ändert und das springt
+
+                    selectMoodleLoginAndProceed(myPrefilledModuleAdapter, new Runnable() {
+                        @Override
+                        public void run() {
+                            setLoading(false);
+                        }
+                    });
+                } else {
+                    // einfach nur filtern
+                    myPrefilledModuleAdapter.filterSemester(strPrefilledSemesters[position]);
+                }
+            }
+
+            private void setLoading(boolean enabled) {
+                if (enabled) {
+                    progLoading.setVisibility(View.VISIBLE);
+                    lvPrefilledModules.setVisibility(View.GONE);
+                } else {
+                    progLoading.setVisibility(View.GONE);
+                    lvPrefilledModules.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -200,6 +237,42 @@ public class SettingsEditModulsLoginsActivity extends AppCompatActivity implemen
         });
     }
 
+    private void selectMoodleLoginAndProceed(final MyPrefilledModuleAdapter myPrefilledModuleAdapter, final Runnable runLoaded) {
+        final ArrayAdapter<LoginData> loginArrayAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice);
+        StorageHelper storageHelper = new StorageHelper(this);
+        loginArrayAdapter.addAll(storageHelper.getLogins());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.dia_title_sel_moodle_login)
+                .setAdapter(loginArrayAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        proceedMoodleLoading(loginArrayAdapter.getItem(which), myPrefilledModuleAdapter, runLoaded);
+                    }
+                });
+        builder.show();
+    }
+
+    private void proceedMoodleLoading(final LoginData moodleLogin, final MyPrefilledModuleAdapter myPrefilledModuleAdapter, final Runnable runLoaded) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Module> moduleList_fromMoodle
+                        = Moodle.getModuleList(SettingsEditModulsLoginsActivity.this, moodleLogin);
+
+                myPrefilledModuleAdapter.setMoodleLoadedList(moduleList_fromMoodle);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        myPrefilledModuleAdapter.filterSemester(getString(R.string.loadFromMoodle));
+                        runLoaded.run();
+                    }
+                });
+            }
+        }).start();
+    }
+
     void reloadFragmentPage(ViewPager viewPager, int position) {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(SettingsEditModulsLoginsActivity.this,
                 getSupportFragmentManager(), mFab);
@@ -228,6 +301,7 @@ public class SettingsEditModulsLoginsActivity extends AppCompatActivity implemen
         private List<Module> filteredModulList;
 
         private String mFilter = "", mFilterSemester = "";
+        private List<Module> mMoodleLoaded = new ArrayList<>();
 
         /**
          * Constructor
@@ -270,8 +344,14 @@ public class SettingsEditModulsLoginsActivity extends AppCompatActivity implemen
             if (filter.equals("")
                     && (mFilterSemester.equals("") || mFilterSemester.equals(getString(R.string.all_semesters)))) {
                 filteredModulList.addAll(modulList);
+            } else if (filter.equals("") && mFilterSemester.equals(getString(R.string.loadFromMoodle))) {
+                filteredModulList.addAll(mMoodleLoaded);
             } else {
-                for (Module module : modulList) {
+                List<Module> kombiList = new ArrayList<>();
+                kombiList.addAll(modulList);
+                kombiList.addAll(mMoodleLoaded);
+
+                for (Module module : kombiList) {
                     if (myContains(module.getSemester(), mFilterSemester)) { // Im richtigen Semester
                         if (myContains(module.getModulTitle(), filter) // Und Suchkriterien passen zu einem der Felder
                                 || myContains(module.getModulDesc(), filter)
@@ -301,6 +381,11 @@ public class SettingsEditModulsLoginsActivity extends AppCompatActivity implemen
 
         private boolean myContains(String strModulType, String strSearch) {
             return strModulType != null && strModulType.toLowerCase().contains(strSearch.toLowerCase());
+        }
+
+        public void setMoodleLoadedList(List<Module> moduleList_fromMoodle) {
+            mMoodleLoaded.clear();
+            mMoodleLoaded.addAll(moduleList_fromMoodle);
         }
 
         class ViewHolder {

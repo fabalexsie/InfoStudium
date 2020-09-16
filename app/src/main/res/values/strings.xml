@@ -101,6 +101,10 @@
     <string name="malo_portal" translatable="false">MaLo-Portal</string>
     <string name="send_logcat_and_close">Send and close app</string>
     <string name="or_abgabesystem" translatable="false">OR Abgabesystem</string>
+    <string name="loadFromMoodle">load from moodle</string>
+    <string name="dia_title_sel_moodle_login">Select the logindata for moodle</string>
+    <string name="no_module_found_in_dashboard_title">No module found</string>
+    <string name="no_module_found_in_dashboard_desc">There are no modules in your moodle dashboard, the login was wrong or an error occurred.</string>
     <string-array name="modul_types">
         <item>@string/moodle</item>
         <item>@string/okuson</item>

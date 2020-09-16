@@ -76,4 +76,8 @@
     <string name="activateModuleInstruction">Anleitung zum Aktivieren von Modulen</string>
     <string name="activateModuleInstruction_text">1) Erstelle Logindaten mit dem Benutzer: \"Moodle\" und dem Passwort: \"ActivateSecret\"\n2) Klick auf \"Haftungsausschluss\" in den Einstellungen\n3) Klick auf \"mehr\"\n4) Tippe \"TRUE\"\n5) Fertig</string>
     <string name="send_logcat_and_close">Senden und App schließen</string>
+    <string name="loadFromMoodle">von moodle laden</string>
+    <string name="dia_title_sel_moodle_login">Wähle die Logindaten für moodle</string>
+    <string name="no_module_found_in_dashboard_title">Keine Module gefunden</string>
+    <string name="no_module_found_in_dashboard_desc">Es gibt keine Module auf deinem Dashboard, das Login war nicht korrekt oder es ist ein Fehler aufgetreten.</string>
 </resources>
