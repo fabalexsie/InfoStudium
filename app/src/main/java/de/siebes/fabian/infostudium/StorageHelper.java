@@ -23,8 +23,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class StorageHelper extends SQLiteOpenHelper {
 
     // public consts
-    public static final String PRAEFIX_NAME = "praefix_name";
-    public static final String PRAEFIX_NAME_DEF_VALUE = "Übung ";
     static final String SHOW_NO_RESULT = "show_no_results";
     static final boolean SHOW_NO_RESULT_DEF_VALUE = true;
     static final String LAST_NEWS_VERSION = "last_news_version";
@@ -686,7 +684,7 @@ public class StorageHelper extends SQLiteOpenHelper {
     }
 
     public boolean isModuleActivated(int typeMoodle) {
-        if(typeMoodle == Module.TYPE_MOODLE) { // Moodle standardmäßig nicht aktiviert
+        if (typeMoodle == Module.TYPE_MOODLE) { // Moodle standardmäßig nicht aktiviert
             return getBoolSettings(MODULE_TYPE_ACTIVATED + typeMoodle, false);
         } else {
             return getBoolSettings(MODULE_TYPE_ACTIVATED + typeMoodle, true);

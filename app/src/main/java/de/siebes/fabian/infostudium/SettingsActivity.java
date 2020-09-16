@@ -27,8 +27,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     // Views
     Switch swiShowPoints, swiShowNoResultText, swiLogActivity;
-    TextView tvMasterpassValue, tvPraefixValue, tvNoResultValue, tvLogActivity;
-    ConstraintLayout conMasterpass, conActiveModuls, conPraefixText, conNoResultText;
+    TextView tvMasterpassValue, tvNoResultValue, tvLogActivity;
+    ConstraintLayout conMasterpass, conActiveModuls, conNoResultText;
     ConstraintLayout conFeedback, conShareApp, conDisclaimer, conActivateModuleInstruction;
 
     static void showSelectModulsActivity(Context context) {
@@ -67,8 +67,6 @@ public class SettingsActivity extends AppCompatActivity {
         tvMasterpassValue = findViewById(R.id.tvMasterpassValue);
         conActiveModuls = findViewById(R.id.conActiveModuls);
         swiShowPoints = findViewById(R.id.swiSetShowPoints);
-        conPraefixText = findViewById(R.id.conPraefix);
-        tvPraefixValue = findViewById(R.id.tvPraefixValue);
         conNoResultText = findViewById(R.id.conNoResultText);
         tvNoResultValue = findViewById(R.id.tvNoResultTextValue);
         swiShowNoResultText = findViewById(R.id.swiShowNoResult);
@@ -120,19 +118,6 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 storageHelper.saveSettings(StorageHelper.SHOW_POINTS, isChecked);
-            }
-        });
-
-        conPraefixText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showTextInputDialog(tvPraefixValue.getText().toString(), new OnTextEnteredListener() {
-                    @Override
-                    public void onEntered(String newText) {
-                        storageHelper.saveSettings(StorageHelper.PRAEFIX_NAME, newText.trim() + " ");
-                        tvPraefixValue.setText(newText);
-                    }
-                });
             }
         });
 
@@ -240,9 +225,6 @@ public class SettingsActivity extends AppCompatActivity {
         } else {
             tvMasterpassValue.setText(R.string.masterpass_set);
         }
-
-        String strPraefix = storageHelper.getStringSettings(StorageHelper.PRAEFIX_NAME, StorageHelper.PRAEFIX_NAME_DEF_VALUE);
-        tvPraefixValue.setText(strPraefix);
 
         boolean showNoResults = storageHelper.getBoolSettings(StorageHelper.SHOW_NO_RESULT, StorageHelper.SHOW_NO_RESULT_DEF_VALUE);
         swiShowNoResultText.setChecked(showNoResults);
