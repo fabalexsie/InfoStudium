@@ -75,6 +75,8 @@ public class ORAbgabesystem extends ModuleLoading {
                                     dPoints = DataProcessing.getDouble(strPoints);
                                     String strMaxPoints = Const.substrBetween(el.text(), "/", null);
                                     dMaxPoints = DataProcessing.getDouble(strMaxPoints);
+                                    if(dMaxPoints < dPoints)
+                                        dMaxPoints = dPoints;
                                     strDate = Const.substrBetween(el.html(), "Beendet:", "<br>");
                                 } else {
                                     dPoints = dMaxPoints = -3;

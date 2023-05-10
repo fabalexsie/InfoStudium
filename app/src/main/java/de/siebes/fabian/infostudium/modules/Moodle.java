@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,7 +19,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -41,8 +43,8 @@ import de.siebes.fabian.infostudium.WebsiteLoadingUtils;
 public class Moodle extends ModuleLoading {
     private static Map<String, String> cookies;
     private static boolean booIsLogedIn = false;
-    private Module mModul;
-    private String mStrKursId;
+    private final Module mModul;
+    private final String mStrKursId;
 
     public Moodle(Activity activity, WebsiteLoadingUtils.OnFinishedListener onFinishedListener, Module modul) {
         super(activity, onFinishedListener);
@@ -69,24 +71,28 @@ public class Moodle extends ModuleLoading {
 
             Connection.Response resLogin = Jsoup
                     .connect("https://moodle.rwth-aachen.de/auth/shibboleth/index.php")
-                    .method(Connection.Method.POST)
+                    .method(Connection.Method.GET)
                     .timeout(Const.TIMEOUT)
                     .cookies(resMoodleLogin.cookies())
                     .execute();
 
-            Connection.Response resAccept = Jsoup
+            String csrf_token = resLogin.parse().getElementsByAttributeValue("name", "csrf_token").attr("value");
+
+            Connection.Response res = Jsoup
                     .connect("https://sso.rwth-aachen.de/idp/profile/SAML2/Redirect/SSO?execution=e1s1")
+                    .method(Connection.Method.POST)
                     .cookies(resMoodleLogin.cookies())
                     .cookies(resLogin.cookies())
                     .data("j_username", loginData.getBenutzer())
                     .data("j_password", loginData.getPasswort())
-                    .data("donotcache", "1")
-                    .data("_eventId_proceed", "Anmeldung")
-                    .data("_shib_idp_revokeConsent", "true")
+                    //.data("donotcache", "1")
+                    .data("_eventId_proceed", "")
+                    //.data("_shib_idp_revokeConsent", "true")
+                    .data("csrf_token", csrf_token)
                     .timeout(Const.TIMEOUT)
                     .execute();
 
-            Connection.Response res = Jsoup.connect("https://sso.rwth-aachen.de/idp/profile/SAML2/Redirect/SSO?execution=e1s2")
+            /*Connection.Response res = Jsoup.connect("https://sso.rwth-aachen.de/idp/profile/SAML2/Redirect/SSO?execution=e1s2")
                     .timeout(Const.TIMEOUT)
                     .data("_shib_idp_consentIds", "rwthSystemIDs")
                     .data("_shib_idp_consentOptions", "_shib_idp_rememberConsent")
@@ -96,15 +102,15 @@ public class Moodle extends ModuleLoading {
                     .cookies(resAccept.cookies())
                     .method(Connection.Method.POST)
                     .timeout(Const.TIMEOUT)
-                    .execute();
+                    .execute();*/
 
             Connection connection = Jsoup
                     .connect("https://moodle.rwth-aachen.de/Shibboleth.sso/SAML2/POST")
                     .method(Connection.Method.POST)
                     .timeout(Const.TIMEOUT)
                     .cookies(resMoodleLogin.cookies())
-                    .cookies(resLogin.cookies())
-                    .cookies(res.cookies());
+                    .cookies(resLogin.cookies());
+            //.cookies(res.cookies());                    ;
             for (Element e : res.parse().getElementsByTag("input")) {
                 if (!e.attr("name").equals("")) { // Solange das name attribute gefüllt ist
                     connection.data(e.attr("name"), e.attr("value"));
@@ -132,31 +138,57 @@ public class Moodle extends ModuleLoading {
                     .timeout(Const.TIMEOUT)
                     .get();
 
-            // die sichtbaren Kurse
-            for (Element el : docDashboard.select("#coc-courselist .hidecoursediv:not(.coc-hidden) h3 a")) {
-                Module module = new Module(el.text().substring(0, 27) + "...");
-                String strLink = el.attr("href");
-                String strKursId = strLink.substring(strLink.indexOf("?id=") + "?id=".length()).trim();
+            String sessKey = docDashboard.getElementsByAttributeValue("name", "sesskey").attr("value");
+
+            // Übersicht vom dashboard
+            String strJson = Jsoup
+                    .connect("https://moodle.rwth-aachen.de/lib/ajax/service.php?sesskey=" + sessKey + "&info=core_course_get_enrolled_courses_by_timeline_classification")
+                    .method(Connection.Method.POST)
+                    .cookies(cookies)
+                    .timeout(Const.TIMEOUT)
+                    .requestBody("[{\"index\":0,\"methodname\":\"core_course_get_enrolled_courses_by_timeline_classification\",\"args\":{\"offset\":0,\"limit\":0,\"classification\":\"customfield\",\"sort\":\"fullname\",\"customfieldname\":\"semester\",\"customfieldvalue\":\"188\"}}]")
+                    .ignoreContentType(true)
+                    .execute()
+                    .body();
+            JSONArray jaRes = new JSONArray(strJson);
+            JSONArray jaCourses = jaRes.getJSONObject(0).getJSONObject("data").getJSONArray("courses");
+            for (int i = 0; i < jaCourses.length(); i++) {
+                JSONObject joCourse = jaCourses.getJSONObject(i);
+                Module module;
+                String shortName = joCourse.getString("shortname");
+                if (shortName.length() > 27)
+                    module = new Module(shortName.substring(0, 27) + "...");
+                else
+                    module = new Module(shortName);
+                //String strLink = el.attr("href");
+                String strKursId = String.valueOf(joCourse.getInt("id"));
+
+                module.setModulDesc(joCourse.getString("fullname").trim());
+                module.setModulKursId(strKursId);
+                module.setSemester(c.getString(R.string.loadFromMoodle));
+                module.setModulType(Module.TYPE_MOODLE);
+                moduleList.add(module);
+            }
+
+            // alle Kurse
+            for (Element el : docDashboard.select(".cal_courses_flt option")) {
+                Module module;
+                if (el.text().length() > 27)
+                    module = new Module(el.text().substring(0, 27) + "...");
+                else
+                    module = new Module(el.text());
+                //String strLink = el.attr("href");
+                String strKursId = el.attr("value"); // strLink.substring(strLink.indexOf("?id=") + "?id=".length()).trim();
 
                 module.setModulDesc(el.text().trim());
                 module.setModulKursId(strKursId);
                 module.setSemester(c.getString(R.string.loadFromMoodle));
-                moduleList.add(module);
+                module.setModulType(Module.TYPE_MOODLE);
+                if (!strKursId.equals("1")) // do not add "Alle Kurse"
+                    moduleList.add(module);
             }
 
-            // die ausgeblendeten Kurse
-            for (Element el : docDashboard.select("#coc-courselist .hidecoursediv.coc-hidden h3 a")) {
-                Module module = new Module("---"); // no title to visualize a bit the hidden state
-                String strLink = el.attr("href");
-                String strKursId = strLink.substring(strLink.indexOf("?id=") + "?id=".length()).trim();
-
-                module.setModulDesc(el.text().trim());
-                module.setModulKursId(strKursId);
-                module.setSemester(c.getString(R.string.loadFromMoodle));
-                moduleList.add(module);
-            }
-
-        } catch (IOException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -187,7 +219,7 @@ public class Moodle extends ModuleLoading {
                     Map<String, String> cookies = getLoginCookies(loginData);
 
                     Connection.Response resErgebnisse = Jsoup
-                            .connect("https://moodle.rwth-aachen.de/grade/report/user/index.php?id=" + String.valueOf(mStrKursId))
+                            .connect("https://moodle.rwth-aachen.de/grade/report/user/index.php?id=" + mStrKursId)
                             .method(Connection.Method.GET)
                             .cookies(cookies)
                             .timeout(Const.TIMEOUT)
@@ -284,11 +316,11 @@ public class Moodle extends ModuleLoading {
         }).start();
     }
 
-    private SSLSocketFactory getRWTH_SSLSocketFactory() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException, NoSuchProviderException {
+    private SSLSocketFactory getRWTH_SSLSocketFactory() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
         return buildSslContext(mActivity.getResources().openRawResource(R.raw.moodle_cert)).getSocketFactory();
     }
 
-    private SSLContext buildSslContext(InputStream... inputStreams) throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException, NoSuchProviderException {
+    private SSLContext buildSslContext(InputStream... inputStreams) throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         X509Certificate cert;
         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
         trustStore.load(null);
