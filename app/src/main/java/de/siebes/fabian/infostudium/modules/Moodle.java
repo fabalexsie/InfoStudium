@@ -232,12 +232,9 @@ public class Moodle extends ModuleLoading {
                     double dPoints = 0;
                     Elements elements;
                     // manchmal liegen die Tests in level2 und/oder in level3
-                    elements = docErgebnisse.select("table th[id^=row_][class^=level3]," +
-                            " table td[headers$=grade][class^=level3]," +
-                            " table td[headers$=range][class^=level3]");
-                    elements.addAll(docErgebnisse.select("table th[id^=row_].level2," +
-                            " table td[headers$=grade].level2," +
-                            " table td[headers$=range].level2"));
+                    elements = docErgebnisse.select("table .gradeitemheader," +
+                            " table td.column-grade," +
+                            " table td.column-range");
                     for (Element el : elements) {
                         switch (col) {
                             case 0:
