@@ -255,7 +255,7 @@ public class Moodle extends ModuleLoading {
                                     strMaxPoints = "0";
                                 }
                                 double dMaxPoints = DataProcessing.getDouble(strMaxPoints);
-                                if (strName.startsWith("Test")) {
+                                if (strName.startsWith("Test") || strName.startsWith("E-Test")) {
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("E-Tests", t);
                                 } else if (strName.startsWith("Selbsttest")) {
@@ -277,6 +277,18 @@ public class Moodle extends ModuleLoading {
                                 } else if (strName.startsWith("Python Coding")) {
                                     Test t = new Test(strName, dPoints, dMaxPoints);
                                     mModul.addTest("Python Coding", t);
+                                } else if (strName.startsWith("ToDo List")) {
+                                    Test t = new Test(strName, dPoints, dMaxPoints);
+                                    mModul.addTest("ToDo List", t);
+                                } else if (strName.startsWith("Task")) {
+                                    Test t = new Test(strName, dPoints, dMaxPoints);
+                                    mModul.addTest("Task", t);
+                                } else if (strName.startsWith("Exercise")) {
+                                    Test t = new Test(strName, dPoints, dMaxPoints);
+                                    mModul.addTest("Exercise", t);
+                                } else if (strName.startsWith("Project")) {
+                                    Test t = new Test(strName, dPoints, dMaxPoints);
+                                    mModul.addTest("Project", t);
                                 } else if (strName.toLowerCase().contains("gesamt")
                                         || strName.toLowerCase().contains("summe")
                                         || strName.toLowerCase().contains("punkte")
